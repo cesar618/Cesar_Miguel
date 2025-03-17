@@ -75,6 +75,45 @@ store.mainContent({ mode: "narrow" });
               to: '/profile',
               icon: 'fa fa-user-circle',
             },
+{
+              name: 'Mantenimiento',
+              heading: true,
+            },
+            {
+              name: 'Actores',
+              to: '/actoresRuta',
+              icon: 'fa fa-user-circle',
+            },
+            {
+              name: 'Productoras',
+              to: '/productoras',
+              icon: 'fa fa-user-circle',
+            },
+            {
+              name: 'Personajes',
+              to: '/characters',
+              icon: 'fa fa-user-circle',
+            },
+            
+            {
+              name: 'Obras',
+              to: '/plays',
+              icon: 'fa fa-user-circle',
+            },
+            {
+              name: 'Staff de Soporte',
+              to: '/m',
+              icon: 'fa fa-user-circle',
+            },
+            
+            
+            {
+              name: 'Locaciones',
+              to: '/m',
+              icon: 'fa fa-user-circle',
+            },
+            
+
             {
               name: 'More',
               heading: true,

@@ -39,11 +39,10 @@ const submit = () => {
         <div class="p-4 p-xl-5 flex-grow-1 d-flex align-items-center">
           <div class="w-100">
             <Link href="/" class="link-fx fw-semibold fs-2 text-white">
-              OneUI <span class="fw-normal">Vue</span>
+              In <span class="fw-normal">The Soul</span>
             </Link>
             <p class="text-white-75 me-xl-8 mt-2">
-              Welcome to your amazing app. Feel free to login and get access to
-              your dashboard.
+              Es una productora de contenidos que se distingue por su enfoque integral y profesional en la industria del entretenimiento.
             </p>
           </div>
         </div>

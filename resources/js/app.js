@@ -2,6 +2,7 @@ import "./bootstrap";
 
 import { createApp, h } from "vue";
 import { createInertiaApp, Link, Head } from "@inertiajs/vue3";
+
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { createPinia } from "pinia";
 
@@ -40,6 +41,10 @@ import clickRipple from "@/directives/clickRipple";
 // Bootstrap framework
 import * as bootstrap from "bootstrap";
 window.bootstrap = bootstrap;
+
+//CODIGO NUEVO 
+
+
 
 const appName = window.document.getElementsByTagName("title")[0]?.innerText;
 
