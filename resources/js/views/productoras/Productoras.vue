@@ -32,7 +32,7 @@
           <tr v-for="(productora, index) in filteredProductoras" :key="productora.id">
             <td>
               <img
-                :src="productora.image ? `/storage/${productora.image}` : '/path/to/default-image.jpg'"
+                :src="productora.image ? `/storage/${productora.image}` : '/path/to/default-Productora.png'"
                 alt="Foto"
                 class="producer-photo"
               />
@@ -232,6 +232,6 @@ button:hover {
   width: 50px;
   height: 50px;
   object-fit: cover;
-  border-radius: 50%;
+  border-radius: 10%;
 }
 </style>

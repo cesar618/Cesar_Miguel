@@ -35,8 +35,9 @@ Route::middleware('auth')->group(function ()
     Route::get('/actoresRuta', [ActorController::class, 'mostrarActores'])->name('actorcontroller.mostrarActores');
     Route::get('/actores/{id}/editar', [ActorController::class, 'edit'])->name('actores.edit');
     Route::put('/actores/{id}', [ActorController::class, 'update'])->name('actores.update');
-    Route::post('/actores/{id}', [ActorController::class, 'update']); // Soporte para POST con _method=PUT
+Route::post('/actores/{id}', [ActorController::class, 'update']); // Mantener compatibilidad
     Route::delete('/actores/{id}', [ActorController::class, 'destroy'])->name('actores.destroy');
+    // ... otras rutas ...
 
     // Rutas de productoras
     Route::get('/productoras', [ProducerController::class, 'index'])->name('productoras.index');

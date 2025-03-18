@@ -50,7 +50,7 @@
           <tr v-for="(actor, index) in filteredActores" :key="actor.id">
             <td>
               <img
-                :src="actor.image ? `/storage/${actor.image}` : '/path/to/default-image.jpg'"
+                :src="actor.image ? `/storage/${actor.image}` : '/path/to/default-image.png'"
                 alt="Foto"
                 class="actor-photo"
               />

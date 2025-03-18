@@ -1,4 +1,3 @@
-<!-- resources/js/Pages/CharacterForm.vue -->
 <template>
   <div class="page-container">
     <div class="header">
@@ -18,6 +17,15 @@
                 id="name"
                 required
                 placeholder="Ingresa el nombre"
+              />
+            </div>
+            <div class="form-group">
+              <label for="work">Obra</label>
+              <input
+                type="text"
+                v-model="form.work"
+                id="work"
+                placeholder="Ingresa la obra"
               />
             </div>
             <div class="form-group">
@@ -56,7 +64,7 @@
 </template>
 
 <script>
-import CharacterList from '../views/CharacterList.vue'; // Importamos el componente
+import CharacterList from '../views/CharacterList.vue';
 
 export default {
   components: {
@@ -72,6 +80,7 @@ export default {
     return {
       form: {
         name: '',
+        work: '',
         notes: '',
         image: null,
       },
@@ -84,16 +93,18 @@ export default {
     submitForm() {
       const formData = new FormData();
       formData.append('name', this.form.name);
+      formData.append('work', this.form.work || '');
       formData.append('notes', this.form.notes || '');
       if (this.form.image) {
         formData.append('image', this.form.image);
       }
 
       this.$inertia.post('/characters', formData, {
-        preserveState: false, // Recarga completa para actualizar la tabla
+        preserveState: false,
         onSuccess: () => {
           // Limpiar el formulario tras guardar
           this.form.name = '';
+          this.form.work = '';
           this.form.notes = '';
           this.form.image = null;
         },

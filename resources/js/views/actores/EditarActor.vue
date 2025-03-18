@@ -63,51 +63,6 @@
         </div>
       </form>
     </div>
-
-    <!-- Tabla de actores debajo del formulario -->
-    <div class="table-section">
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Foto</th>
-              <th>Nombre</th>
-              <th>Apellido</th>
-              <th>Móvil</th>
-              <th>Email</th>
-              <th>Ciudad</th>
-              <th>Coche</th>
-              <th>Carnet Conducir</th>
-              <th>Activo</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(actorItem, index) in actores" :key="actorItem.id">
-              <td>
-                <img
-                  :src="actorItem.image ? `/storage/${actorItem.image}` : '/path/to/default-image.jpg'"
-                  alt="Foto"
-                  class="actor-photo"
-                />
-              </td>
-              <td>{{ actorItem.first_name }}</td>
-              <td>{{ actorItem.last_name }}</td>
-              <td>{{ actorItem.phone || 'N/A' }}</td>
-              <td>{{ actorItem.email || 'N/A' }}</td>
-              <td>{{ actorItem.city || 'N/A' }}</td>
-              <td>{{ actorItem.has_car ? 'Sí' : 'No' }}</td>
-              <td>{{ actorItem.can_drive ? 'Sí' : 'No' }}</td>
-              <td>{{ actorItem.active ? 'Sí' : 'No' }}</td>
-              <td>
-                <button :id="'btn-edit-' + index" class="btn-edit" @click="editActor(actorItem.id)">Editar</button>
-                <button :id="'btn-delete-' + index" class="btn-delete" @click="deleteActor(actorItem.id)">Eliminar</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -118,56 +73,50 @@ export default {
       type: Object,
       required: true,
     },
-    actores: {
-      type: Array,
-      required: true,
-    },
   },
   data() {
     return {
-      form: { ...this.actor }, // Clonamos los datos del actor para editarlos
+      form: { ...this.actor },
     };
   },
   methods: {
     handleFileUpload(event) {
       this.form.image = event.target.files[0];
+      console.log('Archivo seleccionado:', this.form.image);
     },
     async submitForm() {
+      console.log('Datos enviados:', this.form);
       const formData = new FormData();
       Object.entries(this.form).forEach(([key, value]) => {
-        if (key !== 'image' || (key === 'image' && value instanceof File)) {
+        if (key === 'image' && value instanceof File) {
+          formData.append('image', value);
+        } else if (key !== 'image') {
           formData.append(key, typeof value === 'boolean' ? (value ? 1 : 0) : value || '');
         }
       });
       formData.append('_method', 'PUT');
 
       try {
-        await this.$inertia.post(`/actores/${this.form.id}`, formData, {
-          onSuccess: () => {
-            this.$inertia.visit(`/actores/${this.form.id}/editar`); // Recarga la página tras éxito
+        const response = await this.$inertia.post(`/actores/${this.form.id}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          onStart: () => console.log('Iniciando solicitud POST...'),
+          onSuccess: (page) => {
+            console.log('Respuesta exitosa recibida:', page);
+            console.log('Redirigiendo a /actores...');
+            this.$inertia.visit('/actores');
           },
           onError: (errors) => {
             console.error('Errores de validación:', errors);
+            alert('Errores al actualizar el actor: ' + JSON.stringify(errors));
           },
+          onFinish: () => console.log('Solicitud finalizada'),
         });
+        console.log('Respuesta completa:', response);
       } catch (error) {
-        console.error('Error al actualizar el actor:', error);
-      }
-    },
-    editActor(actorId) {
-      this.$inertia.visit(`/actores/${actorId}/editar`);
-    },
-    deleteActor(actorId) {
-      if (confirm('¿Estás seguro de que deseas eliminar este actor?')) {
-        this.$inertia.delete(`/actores/${actorId}`, {
-          onSuccess: () => {
-            this.$inertia.visit(`/actores/${this.form.id}/editar`); // Recarga la página tras eliminar
-          },
-          onError: (errors) => {
-            console.error('Error al eliminar el actor:', errors);
-            alert('Hubo un error al eliminar el actor.');
-          },
-        });
+        console.error('Error inesperado:', error);
+        alert('Error inesperado al actualizar el actor.');
       }
     },
   },
@@ -188,7 +137,6 @@ export default {
 /* Contenedor del formulario */
 .form-container {
   padding: 30px;
-  border-bottom: 1px solid #ddd; /* Separador entre formulario y tabla */
 }
 
 /* Título del formulario */
@@ -325,89 +273,6 @@ input[type="email"]:focus {
   transform: translateY(-2px);
 }
 
-/* Sección de la tabla */
-.table-section {
-  padding: 20px;
-}
-
-/* Contenedor de la tabla */
-.table-container {
-  background: rgb(212, 212, 212); /* Gris claro */
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  padding: 20px;
-}
-
-/* Estilo de la tabla */
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  border: 1px solid #ccc;
-  padding: 12px;
-  text-align: left;
-}
-
-th {
-  background-color: #f4f4f4;
-  font-weight: bold;
-}
-
-td {
-  background-color: #fafafa;
-}
-
-tbody tr:hover {
-  background-color: #e9e9e9;
-}
-
-tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-tr:nth-child(odd) {
-  background-color: #ffffff;
-}
-
-/* Estilo de los botones de la tabla */
-button {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-right: 5px;
-}
-
-.btn-edit {
-  background-color: #28a745; /* Verde */
-  color: #fff;
-}
-
-.btn-edit:hover {
-  background-color: #218838; /* Verde más oscuro */
-  opacity: 0.8;
-}
-
-.btn-delete {
-  background-color: #e74c3c;
-  color: #fff;
-}
-
-button:hover {
-  opacity: 0.8;
-}
-
-/* Estilo de la foto en la tabla */
-.actor-photo {
-  width: 50px;
-  height: 50px;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
 /* Responsive */
 @media (max-width: 768px) {
   .form-grid {
@@ -428,8 +293,7 @@ button:hover {
 }
 
 @media (max-width: 480px) {
-  .form-container,
-  .table-section {
+  .form-container {
     padding: 15px;
   }
 

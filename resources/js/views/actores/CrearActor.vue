@@ -57,62 +57,11 @@
         </div>
       </form>
     </div>
-
-    <!-- Tabla de actores debajo del formulario -->
-    <div class="table-section">
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Foto</th>
-              <th>Nombre</th>
-              <th>Apellido</th>
-              <th>Móvil</th>
-              <th>Email</th>
-              <th>Ciudad</th>
-              <th>Coche</th>
-              <th>Carnet Conducir</th>
-              <th>Activo</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(actorItem, index) in actores" :key="actorItem.id">
-              <td>
-                <img
-                  :src="actorItem.image ? `/storage/${actorItem.image}` : '/path/to/default-image.jpg'"
-                  alt="Foto"
-                  class="actor-photo"
-                />
-              </td>
-              <td>{{ actorItem.first_name }}</td>
-              <td>{{ actorItem.last_name }}</td>
-              <td>{{ actorItem.phone || 'N/A' }}</td>
-              <td>{{ actorItem.email || 'N/A' }}</td>
-              <td>{{ actorItem.city || 'N/A' }}</td>
-              <td>{{ actorItem.has_car ? 'Sí' : 'No' }}</td>
-              <td>{{ actorItem.can_drive ? 'Sí' : 'No' }}</td>
-              <td>{{ actorItem.active ? 'Sí' : 'No' }}</td>
-              <td>
-                <button :id="'btn-edit-' + index" class="btn-edit" @click="editActor(actorItem.id)">Editar</button>
-                <button :id="'btn-delete-' + index" class="btn-delete" @click="deleteActor(actorItem.id)">Eliminar</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: {
-    actores: {
-      type: Array,
-      required: true,
-    },
-  },
   data() {
     return {
       actor: {
@@ -144,28 +93,12 @@ export default {
           onStart: () => console.log('Enviando solicitud...'),
           onSuccess: () => {
             console.log('Actor guardado con éxito');
-            this.$inertia.visit('/actores/crear'); // Recarga la página para actualizar la tabla
+            this.$inertia.visit('/actores'); // Redirige a Actores.vue
           },
           onError: (errors) => console.error('Errores de validación:', errors),
         });
       } catch (error) {
         console.error('Error inesperado:', error);
-      }
-    },
-    editActor(actorId) {
-      this.$inertia.visit(`/actores/${actorId}/editar`);
-    },
-    deleteActor(actorId) {
-      if (confirm('¿Estás seguro de que deseas eliminar este actor?')) {
-        this.$inertia.delete(`/actores/${actorId}`, {
-          onSuccess: () => {
-            this.$inertia.visit('/actores/crear'); // Recarga la página para actualizar la tabla
-          },
-          onError: (errors) => {
-            console.error('Error al eliminar el actor:', errors);
-            alert('Hubo un error al eliminar el actor.');
-          },
-        });
       }
     },
   },
@@ -186,7 +119,6 @@ export default {
 /* Contenedor del formulario */
 .form-container {
   padding: 30px;
-  border-bottom: 1px solid #ddd; /* Separador entre formulario y tabla */
 }
 
 /* Título del formulario */
@@ -314,89 +246,6 @@ input[type="email"]:focus {
   transform: translateY(-2px);
 }
 
-/* Sección de la tabla */
-.table-section {
-  padding: 20px;
-}
-
-/* Contenedor de la tabla */
-.table-container {
-  background: rgb(212, 212, 212); /* Gris claro */
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  padding: 20px;
-}
-
-/* Estilo de la tabla */
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  border: 1px solid #ccc;
-  padding: 12px;
-  text-align: left;
-}
-
-th {
-  background-color: #f4f4f4;
-  font-weight: bold;
-}
-
-td {
-  background-color: #fafafa;
-}
-
-tbody tr:hover {
-  background-color: #e9e9e9;
-}
-
-tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-tr:nth-child(odd) {
-  background-color: #ffffff;
-}
-
-/* Estilo de los botones de la tabla */
-button {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-right: 5px;
-}
-
-.btn-edit {
-  background-color: #28a745; /* Verde */
-  color: #fff;
-}
-
-.btn-edit:hover {
-  background-color: #218838; /* Verde más oscuro */
-  opacity: 0.8;
-}
-
-.btn-delete {
-  background-color: #e74c3c;
-  color: #fff;
-}
-
-button:hover {
-  opacity: 0.8;
-}
-
-/* Estilo de la foto en la tabla */
-.actor-photo {
-  width: 50px;
-  height: 50px;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
 /* Responsive */
 @media (max-width: 768px) {
   .form-grid {
@@ -413,8 +262,7 @@ button:hover {
 }
 
 @media (max-width: 480px) {
-  .form-container,
-  .table-section {
+  .form-container {
     padding: 15px;
   }
 

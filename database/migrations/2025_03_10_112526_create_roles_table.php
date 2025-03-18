@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create('characters', function (Blueprint $table) {  // Assuming table name is 'characters'
             $table->id();
             $table->string('name', 40);
+            $table->string('work', 100)->nullable();  // Added work column
             $table->string('notes', 255)->nullable();
+            $table->string('image')->nullable();      // Assuming this exists for the photo
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('characters');
     }
 };

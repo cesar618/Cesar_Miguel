@@ -2,25 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Actor; // Asegúrate de tener este modelo creado
+use App\Models\Actor;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Inertia\Response;
-use Illuminate\Support\Facades\Redirect;
 
 class ActorController extends Controller
 {
-    // Mostrar los actores (podrías usar esto para mostrar una lista)
-    public function mostrarActores(Request $request): Response
-    {
-        $actores = Actor::all(); // Obtener los actores
-        return Inertia::render('actores/Actores', [
-            'actores' => $actores, // Pasarlos a la vista
-            'status' => session('status'),
-    ]);
-    }
-
-    
     public function index()
     {
         $actores = Actor::all();
@@ -31,12 +18,12 @@ class ActorController extends Controller
     }
 
     public function create()
-{
-    $actores = Actor::all(); // Obtener todos los actores para la tabla
-    return Inertia::render('actores/CrearActor', [
-        'actores' => $actores,
-    ]);
-}
+    {
+        $actores = Actor::all();
+        return Inertia::render('actores/CrearActor', [
+            'actores' => $actores,
+        ]);
+    }
 
     public function store(Request $request)
     {
@@ -49,7 +36,7 @@ class ActorController extends Controller
             'has_car' => 'nullable|boolean',
             'can_drive' => 'nullable|boolean',
             'active' => 'boolean',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Cambiado de 'foto' a 'image'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $actor = new Actor($request->only([
@@ -60,21 +47,18 @@ class ActorController extends Controller
             $actor->image = $request->file('image')->store('actores', 'public');
         }
 
-        $actor->save();//lo guarda en la base de datos
+        $actor->save();
 
-        // Redirigir a la ruta 'actores.index', que renderiza Actores.vue
-        return redirect()->route('actores.index')->with('success', 'Actor creado correctamente.');
+        return response()->json(['message' => 'Actor creado correctamente'], 201);
     }
 
     public function edit($id)
-{
-    $actor = Actor::findOrFail($id);
-    $actores = Actor::all(); // Obtener todos los actores para la tabla
-    return Inertia::render('actores/EditarActor', [
-        'actor' => $actor,
-        'actores' => $actores,
-    ]);
-}
+    {
+        $actor = Actor::findOrFail($id);
+        return Inertia::render('actores/EditarActor', [
+            'actor' => $actor,
+        ]);
+    }
 
     public function update(Request $request, $id)
     {
@@ -92,26 +76,34 @@ class ActorController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $actor->update($request->only([
+        $actor->fill($request->only([
             'first_name', 'last_name', 'phone', 'email', 'city', 'has_car', 'can_drive', 'active',
         ]));
 
         if ($request->hasFile('image')) {
             $actor->image = $request->file('image')->store('actores', 'public');
-            $actor->save();
         }
 
-        return redirect()->route('actores.index')->with('success', 'Actor actualizado correctamente.');
-    }
+        $actor->save();
 
+        // Redirigir a la ruta 'actores.index', que renderiza Actores.vue
+        return redirect()->route('actores.index');
+    }
 
     public function destroy($id)
     {
         $actor = Actor::findOrFail($id);
         $actor->delete();
 
-        return redirect()->route('actores.index')->with('success', 'Actor eliminado correctamente.');
+        return response()->json(['message' => 'Actor eliminado correctamente'], 200);
     }
 
-
+    public function mostrarActores(Request $request)
+    {
+        $actores = Actor::all();
+        return Inertia::render('actores/Actores', [
+            'actores' => $actores,
+            'status' => session('status'),
+        ]);
+    }
 }

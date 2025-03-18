@@ -14,7 +14,7 @@
           id="search"
           v-model="searchQuery"
           class="form-control"
-          placeholder="Busqueda por nombre"
+          placeholder="Búsqueda por nombre"
           style="width: 250px"
         />
       </div>
@@ -45,20 +45,17 @@
                 <!-- Columna de imagen -->
                 <td>
                   <img
-                    :src="
-                      play.image
-                        ? `/storage/${play.image}`
-                        : '/assets/media/photos/default_play_image.jpg'
-                    "
-                    alt="Play image"
-                    class="rounded-circle"
-                    style="width: 40px; height: 40px; object-fit: cover"
-                  />
+  :src="play.image ? `/storage/${play.image}` : '/path/to/default-Productora.png'"
+  alt="Play image"
+  class="rounded-circle"
+  style="width: 40px; height: 40px; object-fit: cover"
+  @error="handleImageError"
+/>
                 </td>
                 <!-- Columna de nombre -->
                 <td>{{ play.name }}</td>
                 <!-- Columna de estado -->
-                <td>{{ play.active ? "Active" : "Inactive" }}</td>
+                <td>{{ play.active ? 'Active' : 'Inactive' }}</td>
                 <!-- Columna de acciones -->
                 <td class="text-end">
                   <button
@@ -102,11 +99,26 @@ export default {
       searchQuery: "", // Aquí defines la propiedad searchQuery
     };
   },
+  computed: {
+    // Filtramos las obras basadas en el nombre
+    filteredPlays() {
+      return this.plays.filter((play) => {
+        return play.name
+          .toLowerCase()
+          .includes(this.searchQuery.toLowerCase());
+      });
+    },
+  },
   methods: {
     goToCreate() {
       // Redirige al formulario para crear una nueva obra
       this.$inertia.visit("/plays/create");
     },
+
+    handleImageError(event) {
+    event.target.src = '/path/to/default-Productora.png';
+  },
+
     goToEdit(playId) {
       // Redirige al formulario para editar la obra
       this.$inertia.visit(`/plays/${playId}/edit`);

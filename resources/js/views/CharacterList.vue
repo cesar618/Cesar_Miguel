@@ -1,4 +1,3 @@
-<!-- resources/js/views/CharacterList.vue -->
 <template>
   <div class="page-container">
     <h1>Personajes</h1>
@@ -12,6 +11,10 @@
         <label for="search-name">Nombre</label>
         <input type="text" v-model="search.name" id="search-name" placeholder="Buscar por nombre" />
       </div>
+      <div class="search-group">
+        <label for="search-work">Obra</label>
+        <input type="text" v-model="search.work" id="search-work" placeholder="Buscar por obra" />
+      </div>
     </div>
 
     <!-- Tabla -->
@@ -21,6 +24,7 @@
           <tr>
             <th>Foto</th>
             <th>Nombre</th>
+            <th>Obra</th>
             <th>Notas</th>
             <th>Acciones</th>
           </tr>
@@ -29,12 +33,13 @@
           <tr v-for="(character, index) in filteredCharacters" :key="character.id">
             <td>
               <img
-                :src="character.image ? `/storage/${character.image}` : '/path/to/default-image.jpg'"
+                :src="character.image ? `/storage/${character.image}` : '/path/to/default-Personaje.png'"
                 alt="Foto"
                 class="character-photo"
               />
             </td>
             <td>{{ character.name }}</td>
+            <td>{{ character.work || 'N/A' }}</td>
             <td>{{ character.notes || 'N/A' }}</td>
             <td>
               <button :id="'btn-edit-' + index" class="btn-edit" @click="editCharacter(character.id)">Editar</button>
@@ -59,6 +64,7 @@ export default {
     return {
       search: {
         name: '',
+        work: '',
       },
     };
   },
@@ -66,8 +72,10 @@ export default {
     filteredCharacters() {
       return this.characters.filter(character => {
         return (
-          !this.search.name || 
-          character.name.toLowerCase().includes(this.search.name.toLowerCase())
+          (!this.search.name || 
+           character.name.toLowerCase().includes(this.search.name.toLowerCase())) &&
+          (!this.search.work || 
+           character.work?.toLowerCase().includes(this.search.work.toLowerCase()))
         );
       });
     },
@@ -77,8 +85,8 @@ export default {
       this.$inertia.visit('/characters/crear');
     },
     editCharacter(characterId) {
-  this.$inertia.visit(`/characters/${characterId}/editar`);
-},
+      this.$inertia.visit(`/characters/${characterId}/editar`);
+    },
     deleteCharacter(characterId) {
       if (confirm('¿Estás seguro de que deseas eliminar este personaje?')) {
         this.$inertia.delete(`/characters/${characterId}`, {
@@ -239,7 +247,7 @@ button {
   width: 50px;
   height: 50px;
   object-fit: cover;
-  border-radius: 50%;
+  border-radius: 5¡10%;
 }
 
 /* Responsividad */
