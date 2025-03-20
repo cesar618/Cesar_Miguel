@@ -9,11 +9,21 @@
     <div class="search-container">
       <div class="search-group">
         <label for="search-name">Nombre</label>
-        <input type="text" v-model="search.name" id="search-name" placeholder="Buscar por nombre" />
+        <input
+          type="text"
+          v-model="search.name"
+          id="search-name"
+          placeholder="Buscar por nombre"
+        />
       </div>
       <div class="search-group">
         <label for="search-work">Obra</label>
-        <input type="text" v-model="search.work" id="search-work" placeholder="Buscar por obra" />
+        <input
+          type="text"
+          v-model="search.work"
+          id="search-work"
+          placeholder="Buscar por obra"
+        />
       </div>
     </div>
 
@@ -30,20 +40,39 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(character, index) in filteredCharacters" :key="character.id">
+          <tr
+            v-for="(character, index) in filteredCharacters"
+            :key="character.id"
+          >
             <td>
               <img
-                :src="character.image ? `/storage/${character.image}` : '/path/to/default-Personaje.png'"
+                :src="
+                  character.image
+                    ? '/storage/' + character.image
+                    : '/path/to/default-Personaje.png'
+                "
                 alt="Foto"
                 class="character-photo"
               />
             </td>
             <td>{{ character.name }}</td>
-            <td>{{ character.work || 'N/A' }}</td>
-            <td>{{ character.notes || 'N/A' }}</td>
-            <td>
-              <button :id="'btn-edit-' + index" class="btn-edit" @click="editCharacter(character.id)">Editar</button>
-              <button :id="'btn-delete-' + index" class="btn-delete" @click="deleteCharacter(character.id)">Eliminar</button>
+            <td>{{ character.work || "N/A" }}</td>
+            <td>{{ character.notes || "N/A" }}</td>
+            <td class="actions-cell">
+              <button
+                :id="'btn-edit-' + index"
+                class="btn-edit"
+                @click="editCharacter(character.id)"
+              >
+                Editar
+              </button>
+              <button
+                :id="'btn-delete-' + index"
+                class="btn-delete"
+                @click="deleteCharacter(character.id)"
+              >
+                Eliminar
+              </button>
             </td>
           </tr>
         </tbody>
@@ -63,37 +92,47 @@ export default {
   data() {
     return {
       search: {
-        name: '',
-        work: '',
+        name: "",
+        work: "",
       },
     };
   },
   computed: {
     filteredCharacters() {
-      return this.characters.filter(character => {
-        return (
-          (!this.search.name || 
-           character.name.toLowerCase().includes(this.search.name.toLowerCase())) &&
-          (!this.search.work || 
-           character.work?.toLowerCase().includes(this.search.work.toLowerCase()))
-        );
+      return this.characters.filter((character) => {
+        const matchName =
+          !this.search.name ||
+          character.name.toLowerCase().includes(this.search.name.toLowerCase());
+        const matchWork =
+          !this.search.work ||
+          (character.work &&
+            character.work
+              .toLowerCase()
+              .includes(this.search.work.toLowerCase()));
+
+        return matchName && matchWork;
       });
     },
   },
   methods: {
+    // Ir a la vista de creación (CharacterForm.vue)
     createCharacter() {
-      this.$inertia.visit('/characters/crear');
+      this.$inertia.visit("/characters/crear");
     },
+
+    // Ir a la vista de edición (CharacterEdit.vue)
     editCharacter(characterId) {
       this.$inertia.visit(`/characters/${characterId}/editar`);
     },
+
+    // Eliminar personaje
     deleteCharacter(characterId) {
-      if (confirm('¿Estás seguro de que deseas eliminar este personaje?')) {
+      if (confirm("¿Estás seguro de que deseas eliminar este personaje?")) {
         this.$inertia.delete(`/characters/${characterId}`, {
           preserveState: false,
           onError: (errors) => {
-            console.error('Error al eliminar el personaje:', errors);
-            alert('Hubo un error al eliminar el personaje.');
+            console.error("Error al eliminar el personaje:", errors);
+            alert("Hubo un error al eliminar el personaje.");
           },
         });
       }
@@ -103,16 +142,24 @@ export default {
 </script>
 
 <style scoped>
-/* Contenedor principal de la página con márgenes y gris elegante */
+/* Contenedor principal de la página */
 .page-container {
   margin: 20px;
   padding: 20px;
-  background-color: rgb(255, 255, 255); /* Blanco */
+  background-color: rgb(255, 255, 255);
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(231, 40, 40, 0.1);
 }
 
-/* Estilo para las acciones */
+/* Título */
+h1 {
+  font-size: 2rem;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* Acciones */
 .actions {
   display: flex;
   justify-content: flex-end;
@@ -123,8 +170,8 @@ export default {
   padding: 8px 16px;
   border: none;
   border-radius: 4px;
-  background-color: #3498db; /* Celeste */
-  color: #fff;
+  background-color: #3498db;
+  color: #fff !important;
   cursor: pointer;
   font-size: 1rem;
   font-weight: 600;
@@ -134,7 +181,7 @@ export default {
   opacity: 0.8;
 }
 
-/* Contenedor del buscador */
+/* Buscador */
 .search-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -161,23 +208,14 @@ export default {
   background-color: #f9f9f9;
 }
 
-/* Estilo del título */
-h1 {
-  font-size: 2rem;
-  color: #333;
-  font-weight: 600;
-  margin-bottom: 20px;
-}
-
-/* Contenedor de la tabla */
+/* Tabla */
 .table-container {
-  background: rgb(212, 212, 212); /* Gris claro */
+  background: rgb(212, 212, 212);
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   padding: 20px;
 }
 
-/* Estilo de la tabla */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -188,17 +226,16 @@ td {
   border: 1px solid #ccc;
   padding: 12px;
   text-align: left;
+  color: #555; /* Texto gris opaco */
 }
 
 th {
   background-color: #f4f4f4;
   font-weight: bold;
-  color: #555;
 }
 
 td {
   background-color: #fafafa;
-  color: #555;
 }
 
 tbody tr:hover {
@@ -213,28 +250,46 @@ tr:nth-child(odd) {
   background-color: #ffffff;
 }
 
-/* Estilo de los botones */
-button {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-right: 5px;
+/* Botones en la columna de acciones */
+.actions-cell button {
+  display: block;
+  width: 100%;
+  margin-bottom: 5px;
 }
 
+/* Botón Editar */
 .btn-edit {
-  background-color: #28a745; /* Verde */
+  background-color: #28a745;
   color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .btn-edit:hover {
-  background-color: #218838; /* Verde más oscuro */
+  background-color: #218838;
   opacity: 0.8;
 }
 
+/* Botón Eliminar */
 .btn-delete {
   background-color: #e74c3c;
   color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-edit,
+.btn-delete {
+  width: 80px;
+  text-align: center;
 }
 
 .btn-delete:hover {
@@ -242,12 +297,12 @@ button {
   opacity: 0.8;
 }
 
-/* Estilo de la foto */
+/* Foto del personaje */
 .character-photo {
   width: 50px;
   height: 50px;
   object-fit: cover;
-  border-radius: 5¡10%;
+  border-radius: 5px;
 }
 
 /* Responsividad */
@@ -256,23 +311,19 @@ button {
     margin: 15px;
     padding: 15px;
   }
-
   h1 {
     font-size: 1.5rem;
   }
-
   .btn-add {
     padding: 6px 12px;
     font-size: 0.9rem;
   }
-
   th,
   td {
     padding: 10px;
   }
-
   .search-container {
-    grid-template-columns: 1fr; /* Una columna en pantallas medianas */
+    grid-template-columns: 1fr;
   }
 }
 
@@ -281,35 +332,29 @@ button {
     justify-content: flex-start;
     margin-bottom: 15px;
   }
-
   .btn-add {
     width: 100%;
     margin-top: 10px;
   }
-
   h1 {
     font-size: 1.25rem;
   }
-
   .page-container {
     margin: 10px;
     padding: 10px;
   }
-
   th,
   td {
     padding: 8px;
     font-size: 0.85rem;
   }
-
   .btn-edit,
   .btn-delete {
     padding: 5px 10px;
     font-size: 0.8rem;
   }
-
   .search-container {
-    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+    grid-template-columns: 1fr;
   }
 }
 </style>

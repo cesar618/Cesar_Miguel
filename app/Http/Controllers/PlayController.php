@@ -11,100 +11,95 @@ use Illuminate\Support\Facades\Log;
 
 class PlayController extends Controller
 {
+    /**
+     * Muestra el listado de obras.
+     */
     public function index()
     {
-        $plays = Play::with('producer', 'characters')->get();
-        return Inertia::render('PlayList', [
+        $plays = Play::with('producer')->get(); // Esto carga la relación producer
+
+        return Inertia::render('obras/Index', [
             'plays' => $plays,
         ]);
     }
 
+    /**
+     * Muestra el formulario para crear una nueva obra.
+     */
     public function create()
     {
-        $producers = Producer::all();
-        $characters = Character::all();
-        return Inertia::render('PlayForm', [
-            'producers'  => $producers,
+        $productoras = Producer::all();
+        $characters = Character::all(); // Obtiene todos los personajes disponibles
+        return Inertia::render('obras/Create', [
+            'productoras' => $productoras,
             'characters' => $characters,
         ]);
     }
 
+    /**
+     * Guarda una nueva obra en la base de datos.
+     */
     public function store(Request $request)
     {
-        $request->validate([
-            'name'        => 'required|string|max:255',
+        $validated = $request->validate([
+            'name'        => 'required|string|max:50',
+            'producer_id' => 'nullable|integer|exists:producers,id',
             'date'        => 'required|date',
-            'location'    => 'required|string|max:255',
-            'producer_id' => 'required|exists:producers,id',
             'active'      => 'required|boolean',
-            'notes'       => 'nullable|string',
-            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validación para la imagen
+            'notes'       => 'nullable|string|max:255',
         ]);
 
-        $play = new Play();
-        $play->name = $request->name;
-        $play->date = $request->date;
-        $play->location = $request->location;
-        $play->producer_id = $request->producer_id;
-        $play->active = $request->active;
-        $play->notes = $request->notes;
+        Play::create($validated);
 
-        if ($request->hasFile('image')) {
-            $play->image = $request->file('image')->store('plays', 'public');
-            Log::info('Imagen guardada: ' . $play->image);
-        } else {
-            $play->image = null; // Explícitamente null si no hay imagen
-            Log::info('No se subió imagen');
-        }
-
-        $play->save();
-
-        return redirect()->route('plays.index')->with('success', 'Play created successfully.');
+        return redirect()->route('obras.index')
+                         ->with('success', 'Obra creada correctamente.');
     }
 
-    public function edit(Play $play)
+    /**
+     * Muestra el formulario para editar una obra existente.
+     */
+    public function edit($id)
     {
-        $producers = Producer::all();
+        $play = Play::with('producer')->findOrFail($id);
+        $productoras = Producer::all();
         $characters = Character::all();
-        return Inertia::render('PlayForm', [
-            'play'       => $play,
-            'producers'  => $producers,
+
+        return Inertia::render('obras/Edit', [
+            'play' => $play,
+            'productoras' => $productoras,
             'characters' => $characters,
         ]);
     }
 
-    public function update(Request $request, Play $play)
+    /**
+     * Actualiza la obra en la base de datos.
+     */
+    public function update(Request $request, $id)
     {
-        $request->validate([
-            'name'        => 'required|string|max:255',
-            'date'        => 'required|date',
-            'location'    => 'required|string|max:255',
-            'producer_id' => 'required|exists:producers,id',
+        $validated = $request->validate([
+            'name'        => 'required|string|max:50',
+            'producer_id' => 'nullable|integer|exists:producers,id',
+            'date'        => 'required|date',  // Agrega esta validación
             'active'      => 'required|boolean',
-            'notes'       => 'nullable|string',
-            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'notes'       => 'nullable|string|max:255',
         ]);
-
-        $play->name = $request->name;
-        $play->date = $request->date;
-        $play->location = $request->location;
-        $play->producer_id = $request->producer_id;
-        $play->active = $request->active;
-        $play->notes = $request->notes;
-
-        if ($request->hasFile('image')) {
-            $play->image = $request->file('image')->store('plays', 'public');
-            Log::info('Imagen actualizada: ' . $play->image);
-        }
-
-        $play->save();
-
-        return redirect()->route('plays.index')->with('success', 'Play updated successfully.');
+    
+        $play = Play::findOrFail($id);
+        $play->update($validated);
+    
+        return redirect()->route('obras.index')
+                         ->with('success', 'Obra actualizada correctamente.');
     }
 
-    public function destroy(Play $play)
+    /**
+     * Elimina una obra de la base de datos.
+     */
+    public function destroy($id)
     {
+        $play = Play::findOrFail($id);
         $play->delete();
-        return redirect()->route('plays.index')->with('success', 'Play deleted successfully.');
+
+        return redirect()->route('obras.index')
+                         ->with('success', 'Obra eliminada correctamente.');
     }
 }

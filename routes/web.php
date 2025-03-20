@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SupportStaffController;
 use App\Http\Controllers\ActorController;
 use App\Http\Controllers\ProducerController;
 use App\Http\Controllers\CharacterController;
@@ -35,7 +36,7 @@ Route::middleware('auth')->group(function ()
     Route::get('/actoresRuta', [ActorController::class, 'mostrarActores'])->name('actorcontroller.mostrarActores');
     Route::get('/actores/{id}/editar', [ActorController::class, 'edit'])->name('actores.edit');
     Route::put('/actores/{id}', [ActorController::class, 'update'])->name('actores.update');
-Route::post('/actores/{id}', [ActorController::class, 'update']); // Mantener compatibilidad
+    Route::post('/actores/{id}', [ActorController::class, 'update']); // Mantener compatibilidad
     Route::delete('/actores/{id}', [ActorController::class, 'destroy'])->name('actores.destroy');
     // ... otras rutas ...
 
@@ -64,12 +65,27 @@ Route::post('/actores/{id}', [ActorController::class, 'update']); // Mantener co
     
 
     // Rutas de obras (Plays)
-    Route::get('/plays', [PlayController::class, 'index'])->name('plays.index');
-    Route::get('/plays/create', [PlayController::class, 'create'])->name('plays.create');
-    Route::post('/plays', [PlayController::class, 'store'])->name('plays.store');
-    Route::get('/plays/{play}/edit', [PlayController::class, 'edit'])->name('plays.edit');
-    Route::put('/plays/{play}', [PlayController::class, 'update'])->name('plays.update');
-    Route::delete('/plays/{play}', [PlayController::class, 'destroy'])->name('plays.destroy');
+    Route::resource('obras', PlayController::class);
+    
+    
+    
+    // Rutas staffsoporte
+    //Listado
+    Route::get('/staff-soporte', [SupportStaffController::class, 'index'])->name('staff.index');
+    // Formulario de creación
+    Route::get('/staff-soporte/create', [SupportStaffController::class, 'create'])->name('staff.create');
+    // Guardar nuevo registro
+    Route::post('/staff-soporte', [SupportStaffController::class, 'store'])->name('staff.store');
+    // Formulario de edición
+    Route::get('/staff-soporte/{id}/edit', [SupportStaffController::class, 'edit'])->name('staff.edit');
+    // Actualizar registro
+    Route::put('/staff-soporte/{id}', [SupportStaffController::class, 'update'])->name('staff.update');
+    // Eliminar registro
+    Route::delete('/staff-soporte/{id}', [SupportStaffController::class, 'destroy'])->name('staff.destroy');
+    
+
+    
+    
 });
 
 require __DIR__ . '/auth.php';
