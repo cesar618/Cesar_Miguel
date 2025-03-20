@@ -15,6 +15,7 @@ class Play extends Model
         'producer_id',
         'active',
         'notes',
+        'date',
     ];
 
     public function producer(){

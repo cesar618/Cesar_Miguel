@@ -1,7 +1,7 @@
 <template>
   <div class="page-container">
     <div class="header">
-      <h1 class="form-title">Personajes</h1>
+      <h1 class="form-title">Crear Personaje</h1>
     </div>
 
     <!-- Formulario de creación -->
@@ -9,6 +9,7 @@
       <form @submit.prevent="submitForm" class="elegant-form">
         <div class="form-grid">
           <div class="left-column">
+            <!-- Nombre -->
             <div class="form-group">
               <label for="name">Nombre</label>
               <input
@@ -19,15 +20,19 @@
                 placeholder="Ingresa el nombre"
               />
             </div>
+
+            <!-- Selección de Obra -->
             <div class="form-group">
-              <label for="work">Obra</label>
-              <input
-                type="text"
-                v-model="form.work"
-                id="work"
-                placeholder="Ingresa la obra"
-              />
+              <label for="play_id">Obra</label>
+              <select v-model="form.play_id" id="play_id">
+                <option value="">Seleccione una obra</option>
+                <option v-for="play in plays" :key="play.id" :value="play.id">
+                  {{ play.name }}
+                </option>
+              </select>
             </div>
+
+            <!-- Notas -->
             <div class="form-group">
               <label for="notes">Notas</label>
               <textarea
@@ -37,10 +42,8 @@
                 rows="3"
               ></textarea>
             </div>
-            <div class="form-group button-wrapper">
-              <button type="submit" class="btn btn-success">Guardar</button>
-            </div>
           </div>
+
           <div class="right-column">
             <div class="photo-section">
               <div class="form-group">
@@ -54,34 +57,32 @@
               </div>
             </div>
           </div>
+
+          <div class="button-wrapper">
+            <!-- Botón de crear/guardar -->
+            <button type="submit" class="btn btn-success">Guardar</button>
+          </div>
         </div>
       </form>
     </div>
-
-    <!-- Lista de personajes -->
-    <CharacterList :characters="characters" />
   </div>
 </template>
 
 <script>
-import CharacterList from '../views/CharacterList.vue';
-
 export default {
-  components: {
-    CharacterList,
-  },
   props: {
-    characters: {
+    // La lista de obras existentes se recibe como "plays"
+    plays: {
       type: Array,
-      required: true,
+      default: () => [],
     },
   },
   data() {
     return {
       form: {
-        name: '',
-        work: '',
-        notes: '',
+        name: "",
+        play_id: "", // Clave foránea a la tabla plays
+        notes: "",
         image: null,
       },
     };
@@ -92,25 +93,28 @@ export default {
     },
     submitForm() {
       const formData = new FormData();
-      formData.append('name', this.form.name);
-      formData.append('work', this.form.work || '');
-      formData.append('notes', this.form.notes || '');
+      formData.append("name", this.form.name);
+      formData.append("play_id", this.form.play_id);
+      formData.append("notes", this.form.notes || "");
       if (this.form.image) {
-        formData.append('image', this.form.image);
+        formData.append("image", this.form.image);
       }
 
-      this.$inertia.post('/characters', formData, {
-        preserveState: false,
+      // Usamos POST para creación
+      this.$inertia.post("/characters", formData, {
         onSuccess: () => {
           // Limpiar el formulario tras guardar
-          this.form.name = '';
-          this.form.work = '';
-          this.form.notes = '';
+          this.form.name = "";
+          this.form.play_id = "";
+          this.form.notes = "";
           this.form.image = null;
         },
         onError: (errors) => {
-          console.error('Errores de validación:', errors);
-          alert('Error al guardar el personaje: ' + Object.values(errors).join(', '));
+          console.error("Errores de validación:", errors);
+          alert(
+            "Error al guardar el personaje: " +
+              Object.values(errors).join(", "),
+          );
         },
       });
     },
@@ -122,7 +126,7 @@ export default {
 .page-container {
   margin: 20px;
   padding: 20px;
-  background-color: rgb(255, 255, 255);
+  background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(231, 40, 40, 0.1);
   min-height: 100vh;
@@ -130,7 +134,7 @@ export default {
 
 .header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-bottom: 30px;
 }
@@ -139,7 +143,6 @@ export default {
   font-size: 2rem;
   color: #333;
   font-weight: 600;
-  margin-left: 20px;
 }
 
 .form-container {
@@ -161,10 +164,6 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 20px;
-}
-
-.button-wrapper {
-  margin-top: auto;
 }
 
 .right-column {
@@ -194,6 +193,7 @@ label {
 }
 
 input[type="text"],
+select,
 textarea {
   width: 100%;
   padding: 12px;
@@ -202,10 +202,13 @@ textarea {
   font-size: 1rem;
   color: #333;
   background-color: #f9f9f9;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 input[type="text"]:focus,
+select:focus,
 textarea:focus {
   border-color: #4caf50;
   box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
@@ -231,17 +234,24 @@ textarea:focus {
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
 }
 
 .btn-success {
   background-color: #4caf50;
   color: white;
+  width: 100%;
 }
 
 .btn-success:hover {
   background-color: #45a049;
   transform: translateY(-2px);
+}
+
+.button-wrapper {
+  grid-column: 1 / -1;
 }
 
 @media (max-width: 768px) {
@@ -251,9 +261,6 @@ textarea:focus {
   .right-column {
     align-items: flex-start;
   }
-  .button-wrapper {
-    margin-top: 20px;
-  }
 }
 
 @media (max-width: 480px) {
@@ -262,7 +269,6 @@ textarea:focus {
   }
   .form-title {
     font-size: 1.5rem;
-    margin-left: 10px;
   }
   .btn {
     font-size: 1rem;

@@ -75,7 +75,7 @@ store.mainContent({ mode: "narrow" });
               to: '/profile',
               icon: 'fa fa-user-circle',
             },
-{
+            {
               name: 'Mantenimiento',
               heading: true,
             },
@@ -94,25 +94,23 @@ store.mainContent({ mode: "narrow" });
               to: '/characters',
               icon: 'fa fa-user-circle',
             },
-            
+
             {
               name: 'Obras',
-              to: '/plays',
+              to: '/obras',
               icon: 'fa fa-user-circle',
             },
             {
               name: 'Staff de Soporte',
-              to: '/m',
+              to: '/staff-soporte',
               icon: 'fa fa-user-circle',
             },
-            
-            
+
             {
               name: 'Locaciones',
               to: '/m',
               icon: 'fa fa-user-circle',
             },
-            
 
             {
               name: 'More',

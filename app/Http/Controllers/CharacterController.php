@@ -4,24 +4,27 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Character;
+use App\Models\Play;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
 
 class CharacterController extends Controller
 {
     public function index()
-{
-    $characters = Character::all();
-    return Inertia::render('CharacterList', [
-        'characters' => $characters,
-    ]);
-}
+    {
+        $characters = Character::all();
+        return Inertia::render('personajes/CharacterList', [ // <-- Antes: 'CharacterList'
+            'characters' => $characters,
+        ]);
+    }
 
     public function create()
     {
         $characters = Character::all();
-        return Inertia::render('CharacterForm', [
+        $plays = Play::all();
+        return Inertia::render('personajes/CharacterForm', [ // <-- Antes: 'CharacterForm'
             'characters' => $characters,
+            'plays'      => $plays,
         ]);
     }
 
@@ -29,6 +32,7 @@ class CharacterController extends Controller
     {
         $request->validate([
             'name'  => 'required|string|max:255',
+            'play_id'=> 'nullable|integer|exists:plays,id',
             'notes' => 'nullable|string|max:500',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -36,6 +40,7 @@ class CharacterController extends Controller
         $character = new Character();
         $character->name  = $request->name;
         $character->notes = $request->notes;
+        $character->play_id = $request->play_id;
 
         if ($request->hasFile('image')) {
             try {
@@ -54,19 +59,19 @@ class CharacterController extends Controller
     public function mostrarCharacters()
     {
         $characters = Character::all();
-        return Inertia::render('views/CharacterList', [
+        return Inertia::render('personajes/CharacterList', [
             'characters' => $characters,
         ]);
     }
 
     public function edit(Character $character)
-{
-    $characters = Character::all();
-    return Inertia::render('CharacterForm', [
-        'character' => $character,
-        'characters' => $characters,
-    ]);
-}
+    {
+        $characters = Character::all();
+        return Inertia::render('personajes/CharacterEdit', [
+            'character'  => $character,
+            'characters' => $characters,
+        ]);
+    }
 
     public function update(Request $request, Character $character)
     {
