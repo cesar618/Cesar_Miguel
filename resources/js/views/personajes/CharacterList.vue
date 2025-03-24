@@ -56,7 +56,7 @@
               />
             </td>
             <td>{{ character.name }}</td>
-            <td>{{ character.work || "N/A" }}</td>
+            <td>{{ character.play ? character.play.name : "N/A" }}</td>
             <td>{{ character.notes || "N/A" }}</td>
             <td class="actions-cell">
               <button
@@ -103,29 +103,22 @@ export default {
         const matchName =
           !this.search.name ||
           character.name.toLowerCase().includes(this.search.name.toLowerCase());
+        // Extraer el nombre de la obra, si existe
+        const playName = character.play ? character.play.name : "";
         const matchWork =
           !this.search.work ||
-          (character.work &&
-            character.work
-              .toLowerCase()
-              .includes(this.search.work.toLowerCase()));
-
+          playName.toLowerCase().includes(this.search.work.toLowerCase());
         return matchName && matchWork;
       });
     },
   },
   methods: {
-    // Ir a la vista de creación (CharacterForm.vue)
     createCharacter() {
       this.$inertia.visit("/characters/crear");
     },
-
-    // Ir a la vista de edición (CharacterEdit.vue)
     editCharacter(characterId) {
       this.$inertia.visit(`/characters/${characterId}/editar`);
     },
-
-    // Eliminar personaje
     deleteCharacter(characterId) {
       if (confirm("¿Estás seguro de que deseas eliminar este personaje?")) {
         this.$inertia.delete(`/characters/${characterId}`, {
@@ -226,7 +219,7 @@ td {
   border: 1px solid #ccc;
   padding: 12px;
   text-align: left;
-  color: #3d3c3c; /* Texto gris opaco */
+  color: #3d3c3c;
 }
 
 th {
@@ -257,7 +250,6 @@ tr:nth-child(odd) {
   margin-bottom: 5px;
 }
 
-/* Botón Editar */
 .btn-edit {
   background-color: #28a745;
   color: #fff;
@@ -274,7 +266,6 @@ tr:nth-child(odd) {
   opacity: 0.8;
 }
 
-/* Botón Eliminar */
 .btn-delete {
   background-color: #e74c3c;
   color: #fff;

@@ -12,7 +12,7 @@ class CharacterController extends Controller
 {
     public function index()
     {
-        $characters = Character::all();
+        $characters = Character::with('play')->get();
         return Inertia::render('personajes/CharacterList', [ // <-- Antes: 'CharacterList'
             'characters' => $characters,
         ]);
