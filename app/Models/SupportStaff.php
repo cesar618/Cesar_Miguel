@@ -17,10 +17,10 @@ class SupportStaff extends Model
         'phone',
         'email',
         'city',
-        'has_car',
-        'can_drive',
-        'active',
-        'notes'
+        'has_car',   
+        'can_drive', 
+        'active',    
+        'notes',
         
     ];
 

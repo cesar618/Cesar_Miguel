@@ -2,18 +2,30 @@
   <div class="page-container">
     <h1>Productoras</h1>
     <div class="actions">
-      <button id="btn-add" class="btn-add" @click="goToCreateProducer">Dar de alta</button>
+      <button id="btn-add" class="btn-add" @click="goToCreateProducer">
+        Dar de alta
+      </button>
     </div>
 
     <!-- Buscador -->
     <div class="search-container">
       <div class="search-group">
         <label for="search-name">Nombre</label>
-        <input type="text" v-model="search.name" id="search-name" placeholder="Buscar por nombre" />
+        <input
+          type="text"
+          v-model="search.name"
+          id="search-name"
+          placeholder="Buscar por nombre"
+        />
       </div>
       <div class="search-group">
         <label for="search-cif">CIF</label>
-        <input type="text" v-model="search.cif" id="search-cif" placeholder="Buscar por CIF" />
+        <input
+          type="text"
+          v-model="search.cif"
+          id="search-cif"
+          placeholder="Buscar por CIF"
+        />
       </div>
     </div>
 
@@ -29,10 +41,17 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(productora, index) in filteredProductoras" :key="productora.id">
+          <tr
+            v-for="(productora, index) in filteredProductoras"
+            :key="productora.id"
+          >
             <td>
               <img
-                :src="productora.image ? `/storage/${productora.image}` : '/path/to/default-Productora.png'"
+                :src="
+                  productora.image
+                    ? `/storage/${productora.image}`
+                    : '/path/to/default-Productora.png'
+                "
                 alt="Foto"
                 class="producer-photo"
               />
@@ -40,8 +59,20 @@
             <td>{{ productora.name }}</td>
             <td>{{ productora.cif }}</td>
             <td>
-              <button :id="'btn-edit-' + index" class="btn-edit" @click="editProducer(productora.id)">Editar</button>
-              <button :id="'btn-delete-' + index" class="btn-delete" @click="deleteProducer(productora.id)">Eliminar</button>
+              <button
+                :id="'btn-edit-' + index"
+                class="btn-edit"
+                @click="editProducer(productora.id)"
+              >
+                Editar
+              </button>
+              <button
+                :id="'btn-delete-' + index"
+                class="btn-delete"
+                @click="deleteProducer(productora.id)"
+              >
+                Eliminar
+              </button>
             </td>
           </tr>
         </tbody>
@@ -61,37 +92,43 @@ export default {
   data() {
     return {
       search: {
-        name: '',
-        cif: '',
+        name: "",
+        cif: "",
       },
     };
   },
   computed: {
     filteredProductoras() {
-      return this.productoras.filter(productora => {
+      return this.productoras.filter((productora) => {
         return (
-          (!this.search.name || productora.name.toLowerCase().includes(this.search.name.toLowerCase())) &&
-          (!this.search.cif || productora.cif.toLowerCase().includes(this.search.cif.toLowerCase()))
+          (!this.search.name ||
+            productora.name
+              .toLowerCase()
+              .includes(this.search.name.toLowerCase())) &&
+          (!this.search.cif ||
+            productora.cif
+              .toLowerCase()
+              .includes(this.search.cif.toLowerCase()))
         );
       });
     },
   },
   methods: {
     goToCreateProducer() {
-      this.$inertia.visit('/productoras/crear');
+      this.$inertia.visit("/productoras/crear");
     },
     editProducer(id) {
       this.$inertia.visit(`/productoras/${id}/editar`);
     },
     deleteProducer(id) {
-      if (confirm('¿Estás seguro de que deseas eliminar esta productora?')) {
+      if (confirm("¿Estás seguro de que deseas eliminar esta productora?")) {
         this.$inertia.delete(`/productoras/${id}`, {
           onSuccess: () => {
-            this.$inertia.visit('/productoras');
+            this.$inertia.visit("/productoras");
           },
           onError: (errors) => {
-            console.error('Error al eliminar la productora:', errors);
-            alert('Hubo un error al eliminar la productora.');
+            console.error("Error al eliminar la productora:", errors);
+            alert("Hubo un error al eliminar la productora.");
           },
         });
       }
@@ -176,6 +213,7 @@ td {
   border: 1px solid #ccc;
   padding: 12px;
   text-align: left;
+  color: #3d3c3c; /* Texto gris opaco */
 }
 
 th {

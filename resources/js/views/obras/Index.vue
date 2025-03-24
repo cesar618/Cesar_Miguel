@@ -71,7 +71,7 @@ const filteredPlays = computed(() => {
           <tr>
             <th>Nombre</th>
             <th>Productora</th>
-            <th>Fecha</th>
+            <!-- Se elimina la columna Fecha -->
             <th>Activo</th>
             <th>Acciones</th>
           </tr>
@@ -80,9 +80,7 @@ const filteredPlays = computed(() => {
           <tr v-for="play in filteredPlays" :key="play.id">
             <td>{{ play.name }}</td>
             <td>{{ play.producer ? play.producer.name : "Sin productora" }}</td>
-            <td>
-              {{ play.date ? new Date(play.date).toLocaleDateString() : "N/A" }}
-            </td>
+            <!-- Se elimina la celda de Fecha -->
             <td>{{ play.active ? "Sí" : "No" }}</td>
             <td>
               <button @click="editPlay(play.id)" class="btn-edit">
@@ -141,6 +139,7 @@ td {
   border: 1px solid #ccc;
   padding: 12px;
   text-align: left;
+  color: #3d3c3c; /* Texto gris opaco */
 }
 
 th {

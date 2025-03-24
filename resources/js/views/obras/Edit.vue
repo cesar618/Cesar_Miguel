@@ -20,7 +20,6 @@ const props = defineProps({
 const form = useForm({
   name: props.play.name,
   producer_id: props.play.producer_id,
-  date: props.play.date || "",
   active: props.play.active,
   notes: props.play.notes ?? "",
   // Si la obra ya tiene personajes asociados, se asume que viene en un array de IDs
@@ -76,15 +75,6 @@ const submit = () => {
           </select>
           <span v-if="form.errors.producer_id" class="error-message">
             {{ form.errors.producer_id }}
-          </span>
-        </div>
-
-        <!-- Campo: Fecha -->
-        <div class="form-group">
-          <label for="date">Fecha</label>
-          <input type="date" id="date" v-model="form.date" required />
-          <span v-if="form.errors.date" class="error-message">
-            {{ form.errors.date }}
           </span>
         </div>
 
@@ -201,7 +191,6 @@ label {
 input[type="text"],
 input[type="email"],
 input[type="number"],
-input[type="date"],
 select,
 textarea {
   width: 100%;
@@ -219,7 +208,6 @@ textarea {
 input[type="text"]:focus,
 input[type="email"]:focus,
 input[type="number"]:focus,
-input[type="date"]:focus,
 select:focus,
 textarea:focus {
   border-color: #4caf50;

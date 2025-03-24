@@ -67,9 +67,11 @@ class CharacterController extends Controller
     public function edit(Character $character)
     {
         $characters = Character::all();
+        $plays = Play::all();
         return Inertia::render('personajes/CharacterEdit', [
             'character'  => $character,
             'characters' => $characters,
+            'plays'      => $plays,
         ]);
     }
 
@@ -78,11 +80,13 @@ class CharacterController extends Controller
         $request->validate([
             'name'  => 'required|string|max:255',
             'notes' => 'nullable|string|max:500',
+            'play_id' => 'nullable|integer|exists:plays,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $character->name  = $request->name;
         $character->notes = $request->notes;
+        $character->play_id = $request->play_id;
 
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('characters', 'public');

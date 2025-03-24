@@ -19,7 +19,7 @@ class Actor extends Model
         'has_car',
         'can_drive',
         'active',
-        'image', // Cambiado de 'foto' a 'image'
+        'image',
         'notes',
     ];
 

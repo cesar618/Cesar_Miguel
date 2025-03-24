@@ -18,9 +18,9 @@ return new class extends Migration
             $table->string('phone', 15)->nullable();
             $table->string('email', 30)->nullable();
             $table->string('city', 30)->nullable();
-            $table->boolean('has_car')->nullable();
-            $table->boolean('can_drive')->nullable();
-            $table->boolean('active');
+            $table->boolean('has_car')->default(false);
+            $table->boolean('can_drive')->default(false);
+            $table->boolean('active')->default(true);
             $table->string('notes', 255)->nullable();
             $table->softDeletes();
             $table->timestamps();

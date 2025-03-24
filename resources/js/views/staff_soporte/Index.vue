@@ -231,6 +231,7 @@ td {
   border: 1px solid #ccc;
   padding: 12px;
   text-align: left;
+  color: #3d3c3c; /* Texto gris opaco */
 }
 
 th {

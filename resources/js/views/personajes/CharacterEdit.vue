@@ -20,13 +20,13 @@
               />
             </div>
             <div class="form-group">
-              <label for="work">Obra</label>
-              <input
-                type="text"
-                v-model="form.work"
-                id="work"
-                placeholder="Ingresa la obra"
-              />
+              <label for="play_id">Obra</label>
+              <select v-model="form.play_id" id="play_id">
+                <option value="">Seleccione una obra</option>
+                <option v-for="play in plays" :key="play.id" :value="play.id">
+                  {{ play.name }}
+                </option>
+              </select>
             </div>
             <div class="form-group">
               <label for="notes">Notas</label>
@@ -68,12 +68,17 @@ export default {
       type: Object,
       required: true,
     },
+    // Asegúrate de recibir la lista de obras
+    plays: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
       form: {
         name: this.character.name || "",
-        work: this.character.work || "",
+        play_id: this.character.play_id || "",
         notes: this.character.notes || "",
         image: null, // Para permitir subir una nueva imagen
       },
@@ -86,7 +91,8 @@ export default {
     submitForm() {
       const formData = new FormData();
       formData.append("name", this.form.name);
-      formData.append("work", this.form.work || "");
+      // Cambiado a play_id en lugar de work
+      formData.append("play_id", this.form.play_id || "");
       formData.append("notes", this.form.notes || "");
       if (this.form.image) {
         formData.append("image", this.form.image);
@@ -180,6 +186,7 @@ label {
 }
 
 input[type="text"],
+select,
 textarea {
   width: 100%;
   padding: 12px;
