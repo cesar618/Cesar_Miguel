@@ -109,9 +109,9 @@ export default {
         email: this.staff.email,
         phone: this.staff.phone,
         city: this.staff.city,
-        has_car: this.staff.has_car,
-        can_drive: this.staff.can_drive,
-        active: this.staff.active,
+        has_car: Boolean(this.staff.has_car),
+        can_drive: Boolean(this.staff.can_drive),
+        active: Boolean(this.staff.active),
         notes: this.staff.notes,
       },
     };
