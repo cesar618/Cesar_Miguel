@@ -40,8 +40,15 @@
           </div>
           <div class="right-column">
             <div class="photo-section">
-              <div class="form-group">
-                <label for="image">Foto</label>
+              <div class="form-group photo-group">
+                <!-- Se muestra la imagen actual si existe y no se ha seleccionado una nueva -->
+                <img
+                  v-if="character.image && !form.image"
+                  :src="`/storage/${character.image}`"
+                  alt="Foto actual"
+                  class="current-photo"
+                />
+                <label for="image">Cambiar Imagen</label>
                 <input
                   type="file"
                   @change="handleImageUpload"
@@ -52,7 +59,6 @@
             </div>
           </div>
           <div class="button-wrapper">
-            <!-- Botón de actualizar -->
             <button type="submit" class="btn btn-success">Actualizar</button>
           </div>
         </div>
@@ -68,7 +74,7 @@ export default {
       type: Object,
       required: true,
     },
-    // Asegúrate de recibir la lista de obras
+    // Recibe la lista de obras
     plays: {
       type: Array,
       default: () => [],
@@ -91,14 +97,12 @@ export default {
     submitForm() {
       const formData = new FormData();
       formData.append("name", this.form.name);
-      // Cambiado a play_id en lugar de work
       formData.append("play_id", this.form.play_id || "");
       formData.append("notes", this.form.notes || "");
       if (this.form.image) {
         formData.append("image", this.form.image);
       }
-
-      // Enviamos POST con _method=PUT para actualizar
+      // Envío del formulario con método PUT para actualizar
       this.$inertia.post(`/characters/${this.character.id}`, formData, {
         onError: (errors) => {
           console.error("Errores de validación:", errors);
@@ -114,8 +118,6 @@ export default {
 </script>
 
 <style scoped>
-/* =========== Estilos adaptados =========== */
-
 .page-container {
   margin: 20px;
   padding: 20px;
@@ -165,11 +167,29 @@ export default {
   align-items: center;
 }
 
+/* Sección de la foto: centrado horizontal y vertical */
 .photo-section {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   width: 100%;
+  min-height: 250px;
+}
+
+/* Grupo para centrar el contenido dentro de la sección de foto */
+.photo-group {
+  text-align: center;
+  width: 100%;
+}
+
+/* Fija el tamaño de la imagen a 200x200px */
+.current-photo {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin: 20px auto;
 }
 
 .form-group {
@@ -201,6 +221,7 @@ textarea {
 }
 
 input[type="text"]:focus,
+select:focus,
 textarea:focus {
   border-color: #4caf50;
   box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);

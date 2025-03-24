@@ -9,29 +9,49 @@
           <div class="left-column">
             <div class="form-group">
               <label for="name">Nombre</label>
-              <input type="text" v-model="form.name" id="name" required placeholder="Ingresa el nombre" />
+              <input
+                type="text"
+                v-model="form.name"
+                id="name"
+                required
+                placeholder="Ingresa el nombre"
+              />
             </div>
             <div class="form-group">
               <label for="cif">CIF</label>
-              <input type="text" v-model="form.cif" id="cif" required placeholder="Ingresa el CIF" />
+              <input
+                type="text"
+                v-model="form.cif"
+                id="cif"
+                required
+                placeholder="Ingresa el CIF"
+              />
             </div>
             <div class="form-group button-wrapper">
-              <button type="submit" class="btn btn-success">Actualizar Productora</button>
+              <button type="submit" class="btn btn-success">
+                Actualizar Productora
+              </button>
             </div>
           </div>
 
           <!-- Mitad derecha: Foto y subida de archivo -->
           <div class="right-column">
             <div class="photo-section">
-              <img
-                v-if="form.image"
-                :src="`/storage/${form.image}`"
-                alt="Foto actual"
-                class="current-photo"
-              />
-              <div class="form-group">
-                <label for="image">Cambiar Foto</label>
-                <input type="file" @change="handleFileUpload" id="image" class="file-input" />
+              <div class="form-group photo-group">
+                <!-- Se muestra la imagen actual si existe y no se ha seleccionado una nueva -->
+                <img
+                  v-if="form.image && typeof form.image !== 'object'"
+                  :src="`/storage/${form.image}`"
+                  alt="Foto actual"
+                  class="current-photo"
+                />
+                <label for="image">Cambiar Imagen</label>
+                <input
+                  type="file"
+                  @change="handleFileUpload"
+                  id="image"
+                  class="file-input"
+                />
               </div>
             </div>
           </div>
@@ -61,18 +81,18 @@ export default {
     async submitForm() {
       const formData = new FormData();
       if (this.form.image instanceof File) {
-        formData.append('image', this.form.image);
+        formData.append("image", this.form.image);
       }
-      formData.append('name', this.form.name);
-      formData.append('cif', this.form.cif);
-      formData.append('_method', 'PUT');
+      formData.append("name", this.form.name);
+      formData.append("cif", this.form.cif);
+      formData.append("_method", "PUT");
 
       await this.$inertia.post(`/productoras/${this.form.id}`, formData, {
         onSuccess: () => {
-          this.$inertia.visit('/productoras');
+          this.$inertia.visit("/productoras");
         },
         onError: (errors) => {
-          console.error('Errores de validación:', errors);
+          console.error("Errores de validación:", errors);
         },
       });
     },
@@ -116,7 +136,7 @@ export default {
 /* Grid para dividir el formulario en dos columnas */
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Dos columnas de igual ancho */
+  grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
 
@@ -129,7 +149,7 @@ export default {
 
 /* Contenedor del botón para alinearlo abajo */
 .button-wrapper {
-  margin-top: auto; /* Empuja el botón al final de la columna izquierda */
+  margin-top: auto;
 }
 
 /* Mitad derecha */
@@ -139,21 +159,29 @@ export default {
   align-items: center;
 }
 
-/* Sección de la foto */
+/* Sección de la foto: centrado horizontal y vertical */
 .photo-section {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 250px;
+}
+
+/* Grupo para centrar el contenido dentro de la sección de foto */
+.photo-group {
+  text-align: center;
   width: 100%;
 }
 
+/* Estilos para la imagen actual: tamaño fijo y centrada */
 .current-photo {
-  width: 100%;
-  max-width: 300px;
-  height: auto;
+  width: 150px;
+  height: 150px;
   object-fit: cover;
   border-radius: 8px;
-  margin-bottom: 20px;
+  margin: 20px auto;
 }
 
 /* Grupos de formulario */
@@ -170,7 +198,9 @@ label {
   font-weight: 500;
 }
 
-input[type="text"] {
+input[type="text"],
+select,
+textarea {
   width: 100%;
   padding: 12px;
   border: 1px solid #ddd;
@@ -178,11 +208,15 @@ input[type="text"] {
   font-size: 1rem;
   color: #333;
   background-color: #f9f9f9;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
-input[type="text"]:focus {
-  border-color: #4CAF50;
+input[type="text"]:focus,
+select:focus,
+textarea:focus {
+  border-color: #4caf50;
   box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
   outline: none;
 }
@@ -202,14 +236,16 @@ input[type="text"]:focus {
   display: block;
   width: 100%;
   padding: 12px;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 8px;
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
 }
 
 .btn:hover {
@@ -220,19 +256,17 @@ input[type="text"]:focus {
 /* Responsive */
 @media (max-width: 768px) {
   .form-grid {
-    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+    grid-template-columns: 1fr;
   }
-
   .right-column {
     align-items: flex-start;
   }
-
   .current-photo {
-    max-width: 200px;
+    width: 200px;
+    height: 200px;
   }
-
   .button-wrapper {
-    margin-top: 20px; /* Espacio adicional en pantallas pequeñas */
+    margin-top: 20px;
   }
 }
 
@@ -241,11 +275,9 @@ input[type="text"]:focus {
     padding: 20px;
     width: 90vw;
   }
-
   .form-title {
     font-size: 1.5rem;
   }
-
   .btn {
     font-size: 1rem;
   }
