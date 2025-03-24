@@ -87,6 +87,7 @@
         </div>
         <div class="form-group button-wrapper">
           <button type="submit" class="btn btn-success">Actualizar</button>
+          <Link href="/staff-soporte" class="btn btn-secondary">Cancelar</Link>
         </div>
       </form>
     </div>
@@ -215,9 +216,19 @@ textarea:focus {
   color: #fff;
 }
 
-.btn-success:hover {
-  background-color: #45a049;
+.btn:hover {
+  background-color: #5f7dc8;
   transform: translateY(-2px);
+}
+
+.btn-secondary {
+  margin-top: 10px;
+  background-color: #6c757d;
+  color: #fff;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  text-decoration: none;
 }
 
 /* Estilo para el toggle switch */

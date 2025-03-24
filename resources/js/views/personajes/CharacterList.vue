@@ -144,12 +144,9 @@ export default {
   box-shadow: 0 4px 12px rgba(231, 40, 40, 0.1);
 }
 
-/* Título */
-h1 {
-  font-size: 2rem;
-  color: #333;
-  font-weight: 600;
-  margin-bottom: 20px;
+.page-container h1 {
+  color: #000000;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
 
 /* Acciones */

@@ -60,6 +60,7 @@
           </div>
           <div class="button-wrapper">
             <button type="submit" class="btn btn-success">Actualizar</button>
+            <Link href="/characters" class="btn btn-secondary">Cancelar</Link>
           </div>
         </div>
       </form>
@@ -258,8 +259,18 @@ textarea:focus {
   width: 100%;
 }
 
-.btn-success:hover {
-  background-color: #45a049;
+.btn-secondary {
+  margin-top: 10px;
+  background-color: #6c757d;
+  color: #fff;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background-color: #5f7dc8;
   transform: translateY(-2px);
 }
 

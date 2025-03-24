@@ -5,7 +5,7 @@
 
       <form @submit.prevent="submitForm" class="elegant-form">
         <div class="form-grid">
-          <!-- Mitad izquierda: Campos de texto y botón -->
+          <!-- Mitad izquierda: Campos de texto -->
           <div class="left-column">
             <div class="form-group">
               <label for="name">Nombre</label>
@@ -26,11 +26,6 @@
                 required
                 placeholder="Ingresa el CIF"
               />
-            </div>
-            <div class="form-group button-wrapper">
-              <button type="submit" class="btn btn-success">
-                Actualizar Productora
-              </button>
             </div>
           </div>
 
@@ -55,6 +50,14 @@
               </div>
             </div>
           </div>
+
+          <!-- Botones a lo ancho de la grilla -->
+          <div class="button-wrapper">
+            <button type="submit" class="btn btn-success">
+              Actualizar Productora
+            </button>
+            <Link href="/productoras" class="btn btn-secondary">Cancelar</Link>
+          </div>
         </div>
       </form>
     </div>
@@ -62,7 +65,12 @@
 </template>
 
 <script>
+import { Link } from "@inertiajs/vue3";
+
 export default {
+  components: {
+    Link,
+  },
   props: {
     productora: {
       type: Object,
@@ -136,7 +144,7 @@ export default {
 /* Grid para dividir el formulario en dos columnas */
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr; /* Dos columnas de igual ancho */
   gap: 20px;
 }
 
@@ -145,11 +153,6 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 20px;
-}
-
-/* Contenedor del botón para alinearlo abajo */
-.button-wrapper {
-  margin-top: auto;
 }
 
 /* Mitad derecha */
@@ -182,6 +185,15 @@ export default {
   object-fit: cover;
   border-radius: 8px;
   margin: 20px auto;
+}
+
+/* Bloque de botones a lo ancho de la grilla */
+.button-wrapper {
+  grid-column: 1 / -1; /* Ocupa ambas columnas */
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Espacio entre el botón "Actualizar" y el link "Cancelar" */
 }
 
 /* Grupos de formulario */
@@ -231,13 +243,11 @@ textarea:focus {
   color: #666;
 }
 
-/* Botón */
+/* Botones */
 .btn {
   display: block;
   width: 100%;
   padding: 12px;
-  background-color: #4caf50;
-  color: white;
   border: none;
   border-radius: 8px;
   font-size: 1.1rem;
@@ -248,8 +258,33 @@ textarea:focus {
     transform 0.2s ease;
 }
 
-.btn:hover {
+/* Botón principal */
+.btn-success {
+  background-color: #4caf50;
+  color: #fff;
+  width: 100%;
+}
+
+.btn-success:hover {
   background-color: #45a049;
+  transform: translateY(-2px);
+}
+
+/* Botón secundario */
+.btn-secondary {
+  background-color: #6c757d;
+  color: #fff;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  width: 100%;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
   transform: translateY(-2px);
 }
 
@@ -264,9 +299,6 @@ textarea:focus {
   .current-photo {
     width: 200px;
     height: 200px;
-  }
-  .button-wrapper {
-    margin-top: 20px;
   }
 }
 

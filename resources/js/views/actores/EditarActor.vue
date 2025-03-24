@@ -1,8 +1,10 @@
 <template>
   <div class="page-container">
-    <div class="form-container">
+    <div class="header">
       <h1 class="form-title">Editar Actor</h1>
+    </div>
 
+    <div class="form-container">
       <form @submit.prevent="submitForm" class="elegant-form">
         <div class="form-grid">
           <!-- Columna izquierda: Datos y toggles -->
@@ -96,23 +98,19 @@
                 <span class="slider"></span>
               </label>
             </div>
-            <div class="form-group button-wrapper">
-              <button type="submit" class="btn btn-success">
-                Actualizar Actor
-              </button>
-            </div>
           </div>
 
           <!-- Columna derecha: Foto y subida de archivo -->
           <div class="right-column">
             <div class="photo-section">
-              <img
-                v-if="form.image && typeof form.image === 'string'"
-                :src="`/storage/${form.image}`"
-                alt="Foto actual"
-                class="current-photo"
-              />
-              <div class="form-group">
+              <div class="form-group photo-group">
+                <!-- Mostrar imagen actual si existe y no se ha seleccionado una nueva -->
+                <img
+                  v-if="form.image && typeof form.image === 'string'"
+                  :src="`/storage/${form.image}`"
+                  alt="Foto actual"
+                  class="current-photo"
+                />
                 <label for="image">Cambiar Foto</label>
                 <input
                   type="file"
@@ -122,6 +120,12 @@
                 />
               </div>
             </div>
+          </div>
+
+          <!-- Botón a lo ancho de la grid -->
+          <div class="button-wrapper">
+            <button type="submit" class="btn btn-success">Actualizar</button>
+            <Link href="/actoresRuta" class="btn btn-secondary">Cancelar</Link>
           </div>
         </div>
       </form>
@@ -139,7 +143,7 @@ export default {
   },
   data() {
     return {
-      // Convertir explícitamente los campos a booleanos
+      // Convertir a booleanos para los toggles
       form: {
         ...this.actor,
         has_car: Boolean(this.actor.has_car),
@@ -151,16 +155,14 @@ export default {
   methods: {
     handleFileUpload(event) {
       this.form.image = event.target.files[0];
-      console.log("Archivo seleccionado:", this.form.image);
     },
     async submitForm() {
-      console.log("Datos enviados:", this.form);
       const formData = new FormData();
       Object.entries(this.form).forEach(([key, value]) => {
         if (key === "image" && value instanceof File) {
           formData.append("image", value);
         } else if (key !== "image") {
-          // Convertir los booleanos a 1 o 0 para enviar al backend
+          // Convertir booleanos a 1 o 0 si es necesario
           formData.append(
             key,
             typeof value === "boolean" ? (value ? 1 : 0) : value || "",
@@ -171,22 +173,15 @@ export default {
 
       try {
         await this.$inertia.post(`/actores/${this.form.id}`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          onStart: () => console.log("Iniciando solicitud POST..."),
-          onSuccess: (page) => {
-            console.log("Respuesta exitosa recibida:", page);
+          headers: { "Content-Type": "multipart/form-data" },
+          onSuccess: () => {
             this.$inertia.visit("/actores");
           },
           onError: (errors) => {
-            console.error("Errores de validación:", errors);
             alert("Errores al actualizar el actor: " + JSON.stringify(errors));
           },
-          onFinish: () => console.log("Solicitud finalizada"),
         });
       } catch (error) {
-        console.error("Error inesperado:", error);
         alert("Error inesperado al actualizar el actor.");
       }
     },
@@ -233,11 +228,6 @@ export default {
   gap: 20px;
 }
 
-/* Botón para alinear al final */
-.button-wrapper {
-  margin-top: auto;
-}
-
 /* Columna derecha */
 .right-column {
   display: flex;
@@ -245,21 +235,35 @@ export default {
   align-items: center;
 }
 
-/* Sección de foto */
+/* Sección de foto: centrado horizontal y vertical */
 .photo-section {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 250px;
+}
+
+/* Grupo para centrar el contenido dentro de la sección de foto */
+.photo-group {
+  text-align: center;
   width: 100%;
 }
 
+/* Imagen fija 200x200px */
 .current-photo {
-  width: 100%;
-  max-width: 300px;
-  height: auto;
+  width: 200px;
+  height: 200px;
   object-fit: cover;
   border-radius: 8px;
-  margin-bottom: 20px;
+  margin: 20px auto;
+}
+
+/* Botón a lo ancho de la grilla */
+.button-wrapper {
+  grid-column: 1 / -1; /* Abarca ambas columnas */
+  margin-top: 20px; /* Separación opcional */
 }
 
 /* Grupos de formulario */
@@ -277,7 +281,9 @@ label {
 }
 
 input[type="text"],
-input[type="email"] {
+input[type="email"],
+select,
+textarea {
   width: 100%;
   padding: 12px;
   border: 1px solid #ddd;
@@ -291,7 +297,9 @@ input[type="email"] {
 }
 
 input[type="text"]:focus,
-input[type="email"]:focus {
+input[type="email"]:focus,
+select:focus,
+textarea:focus {
   border-color: #4caf50;
   box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
   outline: none;
@@ -351,5 +359,63 @@ input:checked + .slider {
 
 input:checked + .slider:before {
   transform: translateX(20px);
+}
+
+/* Botón */
+.btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
+}
+
+.btn-success {
+  background-color: #4caf50;
+  color: white;
+  width: 100%;
+}
+
+.btn-secondary {
+  margin-top: 10px;
+  background-color: #6c757d;
+  color: #fff;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background-color: #5f7dc8;
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .right-column {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-container {
+    padding: 15px;
+  }
+  .form-title {
+    font-size: 1.5rem;
+  }
+  .btn {
+    font-size: 1rem;
+  }
 }
 </style>

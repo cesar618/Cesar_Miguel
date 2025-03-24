@@ -166,6 +166,11 @@ export default {
   box-shadow: 0 4px 12px rgba(231, 40, 40, 0.1);
 }
 
+.page-container h1 {
+  color: #000000;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+}
+
 /* Estilo para las acciones */
 .actions {
   display: flex;
