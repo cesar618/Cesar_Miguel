@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name', 50);
             $table->string('notes', 255)->nullable();
             $table->unsignedBigInteger('play_id')->nullable();
-            $table->foreign('play_id')->references('id')->on('plays');
+            $table->foreign('play_id')->references('id')->on('plays')->onDelete('set null');
             $table->timestamps();
         });
     }

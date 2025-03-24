@@ -82,11 +82,6 @@
                 <span class="slider"></span>
               </label>
             </div>
-            <div class="form-group button-wrapper">
-              <button type="submit" class="btn btn-success">
-                Guardar Actor
-              </button>
-            </div>
           </div>
 
           <!-- Columna derecha: Foto -->
@@ -103,6 +98,10 @@
               </div>
             </div>
           </div>
+        </div>
+        <div class="form-group button-wrapper">
+          <button type="submit" class="btn btn-success">Guardar</button>
+          <Link href="/actoresRuta" class="btn btn-secondary">Cancelar</Link>
         </div>
       </form>
     </div>
@@ -306,5 +305,56 @@ input:checked + .slider {
 
 input:checked + .slider:before {
   transform: translateX(20px);
+}
+
+/* Botón estilo Guardar */
+.btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
+}
+
+.btn-secondary {
+  margin-top: 10px;
+  background-color: #6c757d;
+  color: #fff;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background-color: #5f7dc8;
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form-container {
+    padding: 20px;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-title {
+    font-size: 1.5rem;
+  }
+  .btn {
+    font-size: 1rem;
+  }
 }
 </style>
