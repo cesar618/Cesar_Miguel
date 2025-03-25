@@ -29,19 +29,26 @@ class ActorController extends Controller
     {
         $request->validate([
             'first_name' => 'required|string|max:50',
-            'last_name' => 'required|string|max:50',
-            'phone' => 'nullable|string|max:15',
-            'email' => 'nullable|email|max:30|unique:actors,email',
-            'city' => 'nullable|string|max:30',
-            'has_car' => 'nullable|boolean',
-            'can_drive' => 'nullable|boolean',
-            'active' => 'boolean',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'last_name'  => 'required|string|max:50',
+            'phone'      => 'nullable|string|max:15',
+            'email'      => 'nullable|email|max:30|unique:actors,email,NULL,id,deleted_at,NULL',
+            'city'       => 'nullable|string|max:30',
+            'has_car'    => 'nullable|boolean',
+            'can_drive'  => 'nullable|boolean',
+            'active'     => 'boolean',
+            'image'      => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $actor = new Actor($request->only([
-            'first_name', 'last_name', 'phone', 'email', 'city', 'has_car', 'can_drive', 'active',
-        ]));
+        $actor = new Actor();
+        $actor->first_name = $request->input('first_name');
+        $actor->last_name  = $request->input('last_name');
+        $actor->phone      = $request->input('phone');
+        $actor->email      = $request->input('email');
+        $actor->city       = $request->input('city');
+        // Se usan $request->boolean() para forzar true/false
+        $actor->has_car    = $request->boolean('has_car');
+        $actor->can_drive  = $request->boolean('can_drive');
+        $actor->active     = $request->boolean('active');
 
         if ($request->hasFile('image')) {
             $actor->image = $request->file('image')->store('actores', 'public');
@@ -49,7 +56,7 @@ class ActorController extends Controller
 
         $actor->save();
 
-        return response()->json(['message' => 'Actor creado correctamente'], 201);
+        return redirect()->route('actores.index')->with('success', 'Actor creado correctamente');
     }
 
     public function edit($id)
@@ -66,19 +73,24 @@ class ActorController extends Controller
 
         $request->validate([
             'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:15',
-            'email' => 'nullable|email|max:255|unique:actors,email,' . $actor->id,
-            'city' => 'nullable|string|max:255',
-            'has_car' => 'boolean',
-            'can_drive' => 'boolean',
-            'active' => 'boolean',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'last_name'  => 'required|string|max:255',
+            'phone'      => 'nullable|string|max:15',
+            'email'      => 'nullable|email|max:255|unique:actors,email,' . $actor->id . ',id,deleted_at,NULL',
+            'city'       => 'nullable|string|max:255',
+            'has_car'    => 'boolean',
+            'can_drive'  => 'boolean',
+            'active'     => 'boolean',
+            'image'      => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $actor->fill($request->only([
-            'first_name', 'last_name', 'phone', 'email', 'city', 'has_car', 'can_drive', 'active',
-        ]));
+        $actor->first_name = $request->input('first_name');
+        $actor->last_name  = $request->input('last_name');
+        $actor->phone      = $request->input('phone');
+        $actor->email      = $request->input('email');
+        $actor->city       = $request->input('city');
+        $actor->has_car    = $request->boolean('has_car');
+        $actor->can_drive  = $request->boolean('can_drive');
+        $actor->active     = $request->boolean('active');
 
         if ($request->hasFile('image')) {
             $actor->image = $request->file('image')->store('actores', 'public');
@@ -86,7 +98,6 @@ class ActorController extends Controller
 
         $actor->save();
 
-        // Redirigir a la ruta 'actores.index', que renderiza Actores.vue
         return redirect()->route('actores.index');
     }
 
@@ -95,7 +106,7 @@ class ActorController extends Controller
         $actor = Actor::findOrFail($id);
         $actor->delete();
 
-        return response()->json(['message' => 'Actor eliminado correctamente'], 200);
+        return redirect()->route('actores.index')->with('success', 'Actor eliminado correctamente');
     }
 
     public function mostrarActores(Request $request)

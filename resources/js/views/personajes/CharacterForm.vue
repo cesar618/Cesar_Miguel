@@ -57,10 +57,9 @@
               </div>
             </div>
           </div>
-
           <div class="button-wrapper">
-            <!-- Botón de crear/guardar -->
             <button type="submit" class="btn btn-success">Guardar</button>
+            <Link href="/characters" class="btn btn-secondary">Cancelar</Link>
           </div>
         </div>
       </form>
@@ -239,14 +238,18 @@ textarea:focus {
     transform 0.2s ease;
 }
 
-.btn-success {
-  background-color: #4caf50;
-  color: white;
-  width: 100%;
+.btn-secondary {
+  margin-top: 10px;
+  background-color: #6c757d;
+  color: #fff;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  text-decoration: none;
 }
 
-.btn-success:hover {
-  background-color: #45a049;
+.btn:hover {
+  background-color: #5f7dc8;
   transform: translateY(-2px);
 }
 

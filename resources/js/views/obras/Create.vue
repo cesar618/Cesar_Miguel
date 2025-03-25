@@ -40,15 +40,6 @@
           </span>
         </div>
 
-        <!-- Campo: Fecha -->
-        <div class="form-group">
-          <label for="date">Fecha</label>
-          <input type="date" id="date" v-model="form.date" required />
-          <span v-if="form.errors.date" class="error-message">
-            {{ form.errors.date }}
-          </span>
-        </div>
-
         <!-- Campo: Activo -->
         <div class="form-group">
           <label for="active">Activo</label>
@@ -107,6 +98,7 @@
 
         <div class="form-group button-wrapper">
           <button type="submit" class="btn btn-success">Guardar</button>
+          <Link href="/obras" class="btn btn-secondary">Cancelar</Link>
         </div>
       </form>
     </div>
@@ -132,7 +124,6 @@ const props = defineProps({
 const form = useForm({
   name: "",
   producer_id: "",
-  date: "",
   active: false,
   notes: "",
   character_ids: [], // IDs de los personajes seleccionados
@@ -194,7 +185,6 @@ label {
 input[type="text"],
 input[type="email"],
 input[type="number"],
-input[type="date"],
 select,
 textarea {
   width: 100%;
@@ -212,7 +202,6 @@ textarea {
 input[type="text"]:focus,
 input[type="email"]:focus,
 input[type="number"]:focus,
-input[type="date"]:focus,
 select:focus,
 textarea:focus {
   border-color: #4caf50;
@@ -238,13 +227,18 @@ textarea:focus {
     transform 0.2s ease;
 }
 
-.btn-success {
-  background-color: #4caf50;
+.btn-secondary {
+  margin-top: 10px;
+  background-color: #6c757d;
   color: #fff;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  text-decoration: none;
 }
 
-.btn-success:hover {
-  background-color: #45a049;
+.btn:hover {
+  background-color: #5f7dc8;
   transform: translateY(-2px);
 }
 

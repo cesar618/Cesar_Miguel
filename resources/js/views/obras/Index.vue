@@ -1,46 +1,3 @@
-<script setup>
-import { useForm, router } from "@inertiajs/vue3";
-import { computed, ref } from "vue";
-
-const props = defineProps({
-  plays: {
-    type: Array,
-    default: () => [],
-  },
-});
-
-const form = useForm({});
-
-const editPlay = (id) => {
-  router.visit(`/obras/${id}/edit`, { method: "get" });
-};
-
-const deletePlay = (id) => {
-  if (confirm("¿Seguro que deseas eliminar esta obra?")) {
-    form.delete(`/obras/${id}`);
-  }
-};
-
-// Búsqueda
-const searchName = ref("");
-const searchProducer = ref("");
-
-const filteredPlays = computed(() => {
-  return props.plays.filter((play) => {
-    const matchesName = play.name
-      .toLowerCase()
-      .includes(searchName.value.toLowerCase());
-    const matchesProducer = play.producer
-      ? play.producer.name
-          .toLowerCase()
-          .includes(searchProducer.value.toLowerCase())
-      : "sin productora".includes(searchProducer.value.toLowerCase());
-
-    return matchesName && matchesProducer;
-  });
-});
-</script>
-
 <template>
   <div class="page-container">
     <h1>Listado de Obras</h1>
@@ -71,7 +28,7 @@ const filteredPlays = computed(() => {
           <tr>
             <th>Nombre</th>
             <th>Productora</th>
-            <th>Fecha</th>
+            <!-- Se elimina la columna Fecha -->
             <th>Activo</th>
             <th>Acciones</th>
           </tr>
@@ -80,9 +37,7 @@ const filteredPlays = computed(() => {
           <tr v-for="play in filteredPlays" :key="play.id">
             <td>{{ play.name }}</td>
             <td>{{ play.producer ? play.producer.name : "Sin productora" }}</td>
-            <td>
-              {{ play.date ? new Date(play.date).toLocaleDateString() : "N/A" }}
-            </td>
+            <!-- Se elimina la celda de Fecha -->
             <td>{{ play.active ? "Sí" : "No" }}</td>
             <td>
               <button @click="editPlay(play.id)" class="btn-edit">
@@ -99,6 +54,51 @@ const filteredPlays = computed(() => {
   </div>
 </template>
 
+<script>
+import { useForm, router } from "@inertiajs/vue3";
+
+export default {
+  props: {
+    plays: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  data() {
+    return {
+      form: useForm({}),
+      searchName: "",
+      searchProducer: "",
+    };
+  },
+  computed: {
+    filteredPlays() {
+      return this.plays.filter((play) => {
+        const matchesName = play.name
+          .toLowerCase()
+          .includes(this.searchName.toLowerCase());
+        const matchesProducer = play.producer
+          ? play.producer.name
+              .toLowerCase()
+              .includes(this.searchProducer.toLowerCase())
+          : "sin productora".includes(this.searchProducer.toLowerCase());
+        return matchesName && matchesProducer;
+      });
+    },
+  },
+  methods: {
+    editPlay(id) {
+      router.visit(`/obras/${id}/edit`, { method: "get" });
+    },
+    deletePlay(id) {
+      if (confirm("¿Seguro que deseas eliminar esta obra?")) {
+        this.form.delete(`/obras/${id}`);
+      }
+    },
+  },
+};
+</script>
+
 <style scoped>
 .page-container {
   margin: 20px;
@@ -106,6 +106,11 @@ const filteredPlays = computed(() => {
   background-color: rgb(255, 255, 255);
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(231, 40, 40, 0.1);
+}
+
+.page-container h1 {
+  color: #000000;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
 
 .actions {
@@ -141,6 +146,7 @@ td {
   border: 1px solid #ccc;
   padding: 12px;
   text-align: left;
+  color: #3d3c3c;
 }
 
 th {

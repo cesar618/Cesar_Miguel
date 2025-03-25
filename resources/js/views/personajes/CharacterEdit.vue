@@ -20,13 +20,13 @@
               />
             </div>
             <div class="form-group">
-              <label for="work">Obra</label>
-              <input
-                type="text"
-                v-model="form.work"
-                id="work"
-                placeholder="Ingresa la obra"
-              />
+              <label for="play_id">Obra</label>
+              <select v-model="form.play_id" id="play_id">
+                <option value="">Seleccione una obra</option>
+                <option v-for="play in plays" :key="play.id" :value="play.id">
+                  {{ play.name }}
+                </option>
+              </select>
             </div>
             <div class="form-group">
               <label for="notes">Notas</label>
@@ -40,8 +40,15 @@
           </div>
           <div class="right-column">
             <div class="photo-section">
-              <div class="form-group">
-                <label for="image">Foto</label>
+              <div class="form-group photo-group">
+                <!-- Se muestra la imagen actual si existe y no se ha seleccionado una nueva -->
+                <img
+                  v-if="character.image && !form.image"
+                  :src="`/storage/${character.image}`"
+                  alt="Foto actual"
+                  class="current-photo"
+                />
+                <label for="image">Cambiar Imagen</label>
                 <input
                   type="file"
                   @change="handleImageUpload"
@@ -52,8 +59,8 @@
             </div>
           </div>
           <div class="button-wrapper">
-            <!-- Botón de actualizar -->
             <button type="submit" class="btn btn-success">Actualizar</button>
+            <Link href="/characters" class="btn btn-secondary">Cancelar</Link>
           </div>
         </div>
       </form>
@@ -68,12 +75,17 @@ export default {
       type: Object,
       required: true,
     },
+    // Recibe la lista de obras
+    plays: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
       form: {
         name: this.character.name || "",
-        work: this.character.work || "",
+        play_id: this.character.play_id || "",
         notes: this.character.notes || "",
         image: null, // Para permitir subir una nueva imagen
       },
@@ -86,13 +98,12 @@ export default {
     submitForm() {
       const formData = new FormData();
       formData.append("name", this.form.name);
-      formData.append("work", this.form.work || "");
+      formData.append("play_id", this.form.play_id || "");
       formData.append("notes", this.form.notes || "");
       if (this.form.image) {
         formData.append("image", this.form.image);
       }
-
-      // Enviamos POST con _method=PUT para actualizar
+      // Envío del formulario con método PUT para actualizar
       this.$inertia.post(`/characters/${this.character.id}`, formData, {
         onError: (errors) => {
           console.error("Errores de validación:", errors);
@@ -108,8 +119,6 @@ export default {
 </script>
 
 <style scoped>
-/* =========== Estilos adaptados =========== */
-
 .page-container {
   margin: 20px;
   padding: 20px;
@@ -159,11 +168,29 @@ export default {
   align-items: center;
 }
 
+/* Sección de la foto: centrado horizontal y vertical */
 .photo-section {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   width: 100%;
+  min-height: 250px;
+}
+
+/* Grupo para centrar el contenido dentro de la sección de foto */
+.photo-group {
+  text-align: center;
+  width: 100%;
+}
+
+/* Fija el tamaño de la imagen a 200x200px */
+.current-photo {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin: 20px auto;
 }
 
 .form-group {
@@ -180,6 +207,7 @@ label {
 }
 
 input[type="text"],
+select,
 textarea {
   width: 100%;
   padding: 12px;
@@ -194,6 +222,7 @@ textarea {
 }
 
 input[type="text"]:focus,
+select:focus,
 textarea:focus {
   border-color: #4caf50;
   box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
@@ -230,8 +259,18 @@ textarea:focus {
   width: 100%;
 }
 
-.btn-success:hover {
-  background-color: #45a049;
+.btn-secondary {
+  margin-top: 10px;
+  background-color: #6c757d;
+  color: #fff;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background-color: #5f7dc8;
   transform: translateY(-2px);
 }
 

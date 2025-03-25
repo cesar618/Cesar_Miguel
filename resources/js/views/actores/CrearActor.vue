@@ -1,59 +1,107 @@
 <template>
   <div class="page-container">
-    <!-- Formulario de creación -->
     <div class="form-container">
       <h1 class="form-title">Crear Actor</h1>
 
       <form @submit.prevent="submitForm" class="elegant-form">
         <div class="form-grid">
-          <!-- Mitad izquierda: Campos de texto, checkboxes y botón -->
+          <!-- Columna izquierda: Datos y toggles -->
           <div class="left-column">
             <div class="form-group">
               <label for="first_name">Nombre</label>
-              <input type="text" v-model="actor.first_name" id="first_name" required placeholder="Ingresa el nombre" />
+              <input
+                type="text"
+                v-model="actor.first_name"
+                id="first_name"
+                required
+                placeholder="Ingresa el nombre"
+              />
             </div>
             <div class="form-group">
               <label for="last_name">Apellido</label>
-              <input type="text" v-model="actor.last_name" id="last_name" required placeholder="Ingresa el apellido" />
+              <input
+                type="text"
+                v-model="actor.last_name"
+                id="last_name"
+                required
+                placeholder="Ingresa el apellido"
+              />
             </div>
             <div class="form-group">
               <label for="phone">Móvil</label>
-              <input type="text" v-model="actor.phone" id="phone" placeholder="Ingresa el número" />
+              <input
+                type="text"
+                v-model="actor.phone"
+                id="phone"
+                placeholder="Ingresa el número"
+              />
             </div>
             <div class="form-group">
               <label for="email">Email</label>
-              <input type="email" v-model="actor.email" id="email" placeholder="Ingresa el correo" />
+              <input
+                type="email"
+                v-model="actor.email"
+                id="email"
+                placeholder="Ingresa el correo"
+              />
             </div>
             <div class="form-group">
               <label for="city">Ciudad</label>
-              <input type="text" v-model="actor.city" id="city" placeholder="Ingresa la ciudad" />
+              <input
+                type="text"
+                v-model="actor.city"
+                id="city"
+                placeholder="Ingresa la ciudad"
+              />
             </div>
-            <div class="form-group checkbox-group">
-              <input type="checkbox" v-model="actor.has_car" id="has_car" />
+            <!-- Toggle: Tiene coche -->
+            <div class="form-group">
               <label for="has_car">¿Tiene coche?</label>
+              <label class="switch">
+                <input type="checkbox" v-model="actor.has_car" id="has_car" />
+                <span class="slider"></span>
+              </label>
             </div>
-            <div class="form-group checkbox-group">
-              <input type="checkbox" v-model="actor.can_drive" id="can_drive" />
+            <!-- Toggle: Tiene carnet de conducir -->
+            <div class="form-group">
               <label for="can_drive">¿Tiene carnet de conducir?</label>
+              <label class="switch">
+                <input
+                  type="checkbox"
+                  v-model="actor.can_drive"
+                  id="can_drive"
+                />
+                <span class="slider"></span>
+              </label>
             </div>
-            <div class="form-group checkbox-group">
-              <input type="checkbox" v-model="actor.active" id="active" />
+            <!-- Toggle: Está activo -->
+            <div class="form-group">
               <label for="active">¿Está activo?</label>
-            </div>
-            <div class="form-group button-wrapper">
-              <button type="submit" class="btn btn-success">Guardar Actor</button>
+              <label class="switch">
+                <input type="checkbox" v-model="actor.active" id="active" />
+                <span class="slider"></span>
+              </label>
             </div>
           </div>
 
-          <!-- Mitad derecha: Subida de foto -->
+          <!-- Columna derecha: Foto -->
           <div class="right-column">
             <div class="photo-section">
               <div class="form-group">
                 <label for="image">Foto</label>
-                <input type="file" @change="handleFileUpload" id="image" class="file-input" />
+                <input
+                  type="file"
+                  @change="handleFileUpload"
+                  id="image"
+                  class="file-input"
+                />
               </div>
             </div>
           </div>
+        </div>
+        <div class="form-group button-wrapper">
+          <button type="submit" class="btn btn-success">Guardar</button>
+          <Link href="/actoresRuta" class="btn btn-secondary">Cancelar</Link>
         </div>
       </form>
     </div>
@@ -65,11 +113,11 @@ export default {
   data() {
     return {
       actor: {
-        first_name: '',
-        last_name: '',
-        phone: '',
-        email: '',
-        city: '',
+        first_name: "",
+        last_name: "",
+        phone: "",
+        email: "",
+        city: "",
         has_car: false,
         can_drive: false,
         active: false,
@@ -82,23 +130,27 @@ export default {
       this.actor.image = event.target.files[0];
     },
     async submitForm() {
-      console.log('submitForm ejecutado');
+      console.log("submitForm ejecutado");
       const formData = new FormData();
       Object.entries(this.actor).forEach(([key, value]) => {
-        formData.append(key, typeof value === 'boolean' ? (value ? 1 : 0) : value || '');
+        // Para los booleanos se envía 1 o 0
+        formData.append(
+          key,
+          typeof value === "boolean" ? (value ? 1 : 0) : value || "",
+        );
       });
 
       try {
-        await this.$inertia.post('/actores', formData, {
-          onStart: () => console.log('Enviando solicitud...'),
+        await this.$inertia.post("/actores", formData, {
+          onStart: () => console.log("Enviando solicitud..."),
           onSuccess: () => {
-            console.log('Actor guardado con éxito');
-            this.$inertia.visit('/actores'); // Redirige a Actores.vue
+            console.log("Actor guardado con éxito");
+            this.$inertia.visit("/actores");
           },
-          onError: (errors) => console.error('Errores de validación:', errors),
+          onError: (errors) => console.error("Errores de validación:", errors),
         });
       } catch (error) {
-        console.error('Error inesperado:', error);
+        console.error("Error inesperado:", error);
       }
     },
   },
@@ -106,11 +158,11 @@ export default {
 </script>
 
 <style scoped>
-/* Contenedor principal de la página */
+/* Contenedor principal */
 .page-container {
   margin: 20px;
   padding: 20px;
-  background-color: rgb(255, 255, 255); /* Blanco */
+  background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(231, 40, 40, 0.1);
   min-height: 100vh;
@@ -121,7 +173,7 @@ export default {
   padding: 30px;
 }
 
-/* Título del formulario */
+/* Título */
 .form-title {
   font-size: 2rem;
   color: #333;
@@ -130,33 +182,33 @@ export default {
   margin-bottom: 25px;
 }
 
-/* Grid para dividir el formulario */
+/* Grid para formulario */
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Dos columnas de igual ancho */
+  grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
 
-/* Mitad izquierda */
+/* Columna izquierda */
 .left-column {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-/* Contenedor del botón para alinearlo abajo */
+/* Botón alineado abajo */
 .button-wrapper {
-  margin-top: auto; /* Empuja el botón al final de la columna izquierda */
+  margin-top: auto;
 }
 
-/* Mitad derecha */
+/* Columna derecha */
 .right-column {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-/* Sección de la foto */
+/* Sección de foto */
 .photo-section {
   display: flex;
   flex-direction: column;
@@ -187,12 +239,14 @@ input[type="email"] {
   font-size: 1rem;
   color: #333;
   background-color: #f9f9f9;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 input[type="text"]:focus,
 input[type="email"]:focus {
-  border-color: #4CAF50;
+  border-color: #4caf50;
   box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
   outline: none;
 }
@@ -207,69 +261,98 @@ input[type="email"]:focus {
   color: #666;
 }
 
-/* Checkbox */
-.checkbox-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.checkbox-group input[type="checkbox"] {
-  width: 20px;
+/* Toggle switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
   height: 20px;
-  accent-color: #4CAF50;
 }
 
-.checkbox-group label {
-  margin-bottom: 0;
-  font-size: 1rem;
-  color: #555;
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
-/* Botón del formulario */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 20px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #28a745;
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* Botón estilo Guardar */
 .btn {
   display: block;
   width: 100%;
   padding: 12px;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 8px;
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
+}
+
+.btn-secondary {
+  margin-top: 10px;
+  background-color: #6c757d;
+  color: #fff;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  text-decoration: none;
 }
 
 .btn:hover {
-  background-color: #45a049;
+  background-color: #5f7dc8;
   transform: translateY(-2px);
 }
 
 /* Responsive */
 @media (max-width: 768px) {
+  .form-container {
+    padding: 20px;
+  }
   .form-grid {
-    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
-  }
-
-  .right-column {
-    align-items: flex-start;
-  }
-
-  .button-wrapper {
-    margin-top: 20px; /* Espacio adicional en pantallas pequeñas */
+    grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 480px) {
-  .form-container {
-    padding: 15px;
-  }
-
   .form-title {
     font-size: 1.5rem;
   }
-
   .btn {
     font-size: 1rem;
   }

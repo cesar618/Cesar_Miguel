@@ -57,24 +57,24 @@
         </div>
         <div class="form-group">
           <label for="has_car">Tiene auto</label>
-          <select v-model="form.has_car" id="has_car">
-            <option :value="true">Sí</option>
-            <option :value="false">No</option>
-          </select>
+          <label class="switch">
+            <input type="checkbox" v-model="form.has_car" id="has_car" />
+            <span class="slider"></span>
+          </label>
         </div>
         <div class="form-group">
           <label for="can_drive">Sabe conducir</label>
-          <select v-model="form.can_drive" id="can_drive">
-            <option :value="true">Sí</option>
-            <option :value="false">No</option>
-          </select>
+          <label class="switch">
+            <input type="checkbox" v-model="form.can_drive" id="can_drive" />
+            <span class="slider"></span>
+          </label>
         </div>
         <div class="form-group">
           <label for="active">Activo</label>
-          <select v-model="form.active" id="active">
-            <option :value="true">Sí</option>
-            <option :value="false">No</option>
-          </select>
+          <label class="switch">
+            <input type="checkbox" v-model="form.active" id="active" />
+            <span class="slider"></span>
+          </label>
         </div>
         <div class="form-group">
           <label for="notes">Notas</label>
@@ -87,6 +87,7 @@
         </div>
         <div class="form-group button-wrapper">
           <button type="submit" class="btn btn-success">Guardar</button>
+          <Link href="/staff-soporte" class="btn btn-secondary">Cancelar</Link>
         </div>
       </form>
     </div>
@@ -163,10 +164,8 @@ label {
   font-weight: 500;
 }
 
-/* Estilos para inputs, selects y textarea para fondo blanco y texto legible */
 input[type="text"],
 input[type="email"],
-select,
 textarea {
   width: 100%;
   padding: 12px;
@@ -182,7 +181,6 @@ textarea {
 
 input[type="text"]:focus,
 input[type="email"]:focus,
-select:focus,
 textarea:focus {
   border-color: #4caf50;
   box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
@@ -207,25 +205,64 @@ textarea:focus {
     transform 0.2s ease;
 }
 
-.btn-success {
-  background-color: #4caf50;
+.btn-secondary {
+  margin-top: 10px;
+  background-color: #6c757d;
   color: #fff;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  text-decoration: none;
 }
 
-.btn-success:hover {
-  background-color: #45a049;
+.btn:hover {
+  background-color: #5f7dc8;
   transform: translateY(-2px);
 }
 
-@media (max-width: 768px) {
-  .form-container {
-    padding: 15px;
-  }
-  .form-title {
-    font-size: 1.5rem;
-  }
-  .btn {
-    font-size: 1rem;
-  }
+/* Estilo para el toggle switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 20px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #28a745;
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
 }
 </style>

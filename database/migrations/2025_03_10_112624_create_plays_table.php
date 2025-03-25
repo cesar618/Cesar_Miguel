@@ -18,10 +18,9 @@ return new class extends Migration
             $table->boolean('active');
             $table->string('notes', 255)->nullable();
             $table->unsignedBigInteger('producer_id')->nullable();
-            $table->foreign('producer_id')->references('id')->on('producers');
+            $table->foreign('producer_id')->references('id')->on('producers')->onDelete('set null');
             $table->softDeletes();
             $table->timestamps();
-            $table->date('date')->nullable();
 
         });
     }

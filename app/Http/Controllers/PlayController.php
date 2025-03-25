@@ -44,7 +44,6 @@ class PlayController extends Controller
         $validated = $request->validate([
             'name'        => 'required|string|max:50',
             'producer_id' => 'nullable|integer|exists:producers,id',
-            'date'        => 'required|date',
             'active'      => 'required|boolean',
             'notes'       => 'nullable|string|max:255',
         ]);
@@ -79,7 +78,6 @@ class PlayController extends Controller
         $validated = $request->validate([
             'name'        => 'required|string|max:50',
             'producer_id' => 'nullable|integer|exists:producers,id',
-            'date'        => 'required|date',  // Agrega esta validación
             'active'      => 'required|boolean',
             'notes'       => 'nullable|string|max:255',
         ]);

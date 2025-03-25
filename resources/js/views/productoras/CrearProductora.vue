@@ -6,18 +6,36 @@
       <form @submit.prevent="submitForm" class="elegant-form">
         <div class="form-group">
           <label for="image">Foto</label>
-          <input type="file" @change="handleFileUpload" id="image" class="file-input" />
+          <input
+            type="file"
+            @change="handleFileUpload"
+            id="image"
+            class="file-input"
+          />
         </div>
         <div class="form-group">
           <label for="name">Nombre</label>
-          <input type="text" v-model="form.name" id="name" required placeholder="Ingresa el nombre" />
+          <input
+            type="text"
+            v-model="form.name"
+            id="name"
+            required
+            placeholder="Ingresa el nombre"
+          />
         </div>
         <div class="form-group">
           <label for="cif">CIF</label>
-          <input type="text" v-model="form.cif" id="cif" required placeholder="Ingresa el CIF" />
+          <input
+            type="text"
+            v-model="form.cif"
+            id="cif"
+            required
+            placeholder="Ingresa el CIF"
+          />
         </div>
         <div class="form-group">
-          <button type="submit" class="btn btn-success">Guardar Productora</button>
+          <button type="submit" class="btn btn-success">Guardar</button>
+          <Link href="/productoras" class="btn btn-secondary">Cancelar</Link>
         </div>
       </form>
     </div>
@@ -30,8 +48,8 @@ export default {
     return {
       form: {
         image: null,
-        name: '',
-        cif: '',
+        name: "",
+        cif: "",
       },
     };
   },
@@ -42,17 +60,17 @@ export default {
     async submitForm() {
       const formData = new FormData();
       if (this.form.image) {
-        formData.append('image', this.form.image);
+        formData.append("image", this.form.image);
       }
-      formData.append('name', this.form.name);
-      formData.append('cif', this.form.cif);
+      formData.append("name", this.form.name);
+      formData.append("cif", this.form.cif);
 
-      await this.$inertia.post('/productoras', formData, {
+      await this.$inertia.post("/productoras", formData, {
         onSuccess: () => {
-          this.$inertia.visit('/productoras');
+          this.$inertia.visit("/productoras");
         },
         onError: (errors) => {
-          console.error('Errores de validación:', errors);
+          console.error("Errores de validación:", errors);
         },
       });
     },
@@ -114,11 +132,13 @@ input[type="text"] {
   font-size: 1rem;
   color: #333;
   background-color: #f9f9f9;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 input[type="text"]:focus {
-  border-color: #4CAF50;
+  border-color: #4caf50;
   box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
   outline: none;
 }
@@ -138,18 +158,30 @@ input[type="text"]:focus {
   display: block;
   width: 100%;
   padding: 12px;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 8px;
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
+}
+
+.btn-secondary {
+  margin-top: 10px;
+  background-color: #6c757d;
+  color: #fff;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  text-decoration: none;
 }
 
 .btn:hover {
-  background-color: #45a049;
+  background-color: #5f7dc8;
   transform: translateY(-2px);
 }
 
