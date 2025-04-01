@@ -11,7 +11,7 @@ class ProducerController extends Controller
 {
     public function index()
     {
-        $productoras = Producer::all();
+        $productoras = Producer::withCount('plays')->get();
         return Inertia::render('productoras/Productoras', [
             'productoras' => $productoras,
         ]);
@@ -77,11 +77,21 @@ class ProducerController extends Controller
     public function destroy($id)
     {
         $productora = Producer::findOrFail($id);
+
+        // Verificar si la productora tiene obras asociadas
+        if ($productora->plays()->exists()) {
+            return redirect()->route('productoras.index')
+                            ->with('error', 'No se puede eliminar la productora, actualmente está en uso.');
+        }
+
+        // Si existe imagen, eliminarla
         if ($productora->image) {
             Storage::disk('public')->delete($productora->image);
         }
+
         $productora->delete();
 
-        return redirect()->route('productoras.index')->with('success', 'Productora eliminada con éxito.');
-    }
+        return redirect()->route('productoras.index')
+                        ->with('success', 'Productora eliminada con éxito.');
+        }
 }

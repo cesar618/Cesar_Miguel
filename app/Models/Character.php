@@ -17,7 +17,7 @@ class Character extends Model
 
     public function play()
     {
-        return $this->belongsTo(Play::class);
+        return $this->belongsToMany(Play::class);
     }
 
     public function actorCharacters(){

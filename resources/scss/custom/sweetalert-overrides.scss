@@ -1,0 +1,37 @@
+/* resources/scss/custom/sweetalert-overrides.scss */
+
+/* Sobrescribe el estilo del popup */
+.swal2-popup {
+  font-family: "Arial", sans-serif !important;
+  font-size: 1rem !important;
+  border-radius: 10px !important;
+  background-color: #f0f0f0 !important;
+  padding: 20px !important;
+  max-width: 20em !important;
+}
+
+/* Estilo para el título */
+.swal2-title {
+  color: #333 !important;
+}
+
+/* Estilo para el contenido */
+.swal2-content {
+  color: #555 !important;
+}
+
+/* Personaliza el botón de confirmación */
+.swal2-confirm {
+  background-color: #28a745 !important;
+  border: none !important;
+  padding: 10px 20px !important;
+  border-radius: 5px !important;
+}
+
+/* Personaliza el botón de cancelación */
+.swal2-cancel {
+  background-color: #e74c3c !important;
+  border: none !important;
+  padding: 10px 20px !important;
+  border-radius: 5px !important;
+}

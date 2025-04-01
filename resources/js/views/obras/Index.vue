@@ -28,8 +28,8 @@
           <tr>
             <th>Nombre</th>
             <th>Productora</th>
-            <!-- Se elimina la columna Fecha -->
             <th>Activo</th>
+            <th>Personajes</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -37,8 +37,39 @@
           <tr v-for="play in filteredPlays" :key="play.id">
             <td>{{ play.name }}</td>
             <td>{{ play.producer ? play.producer.name : "Sin productora" }}</td>
-            <!-- Se elimina la celda de Fecha -->
             <td>{{ play.active ? "Sí" : "No" }}</td>
+            <td>
+              <div class="dropdown-container">
+                <button @click="toggleDropdown(play.id)" class="btn-dropdown">
+                  Ver personajes
+                </button>
+                <div v-if="openDropdowns[play.id]" class="dropdown-content">
+                  <div
+                    v-for="character in play.characters"
+                    :key="character.id"
+                    class="character-item"
+                  >
+                    <img
+                      :src="
+                        character.image
+                          ? `/storage/${character.image}`
+                          : '/path/to/default-Personaje.png'
+                      "
+                      alt="Foto del personaje"
+                      class="character-photo-small"
+                    />
+                    <span>{{ character.name }}</span>
+                    <!-- Botón para eliminar el personaje de la obra -->
+                    <button
+                      class="btn-remove-character"
+                      @click.stop="removeCharacter(play.id, character.id)"
+                    >
+                      x
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </td>
             <td>
               <button @click="editPlay(play.id)" class="btn-edit">
                 Editar
@@ -56,6 +87,7 @@
 
 <script>
 import { useForm, router } from "@inertiajs/vue3";
+import axios from "axios"; // Asegúrate de tener axios instalado e importado
 
 export default {
   props: {
@@ -69,6 +101,7 @@ export default {
       form: useForm({}),
       searchName: "",
       searchProducer: "",
+      openDropdowns: {}, // Para controlar el dropdown por obra
     };
   },
   computed: {
@@ -95,6 +128,42 @@ export default {
         this.form.delete(`/obras/${id}`);
       }
     },
+    toggleDropdown(playId) {
+      this.openDropdowns[playId] = !this.openDropdowns[playId];
+    },
+    removeCharacter(playId, characterId) {
+      this.$swal
+        .fire({
+          title: "¿Estas seguro?",
+          text: "El personaje será eliminado !!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Delete",
+          cancelButtonText: "Cancel",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            axios
+              .delete(`/obras/${playId}/characters/${characterId}`)
+              .then((response) => {
+                this.$swal.fire({
+                  icon: "success",
+                  title: "Eliminado",
+                  text: "El personaje fue removido de la obra.",
+                });
+                this.$inertia.reload();
+              })
+              .catch((error) => {
+                console.error("Error al eliminar personaje", error);
+                this.$swal.fire({
+                  icon: "error",
+                  title: "Error",
+                  text: "Hubo un error al eliminar el personaje.",
+                });
+              });
+          }
+        });
+    },
   },
 };
 </script>
@@ -103,14 +172,9 @@ export default {
 .page-container {
   margin: 20px;
   padding: 20px;
-  background-color: rgb(255, 255, 255);
+  background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(231, 40, 40, 0.1);
-}
-
-.page-container h1 {
-  color: #000000;
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
 
 .actions {
@@ -190,5 +254,58 @@ button {
   padding: 8px;
   border-radius: 4px;
   border: 1px solid #ccc;
+}
+
+/* Estilos para el dropdown de personajes */
+.dropdown-container {
+  position: relative; /* Contenedor de referencia */
+  display: inline-block;
+}
+
+.btn-dropdown {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 5px;
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.character-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+
+.character-photo-small {
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Estilos para el botón de eliminación de personaje */
+.btn-remove-character {
+  background: transparent;
+  border: none;
+  color: #e74c3c;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-left: auto;
 }
 </style>
