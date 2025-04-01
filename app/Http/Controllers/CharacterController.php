@@ -22,7 +22,7 @@ class CharacterController extends Controller
     {
         $characters = Character::all();
         $plays = Play::all();
-        return Inertia::render('personajes/CharacterForm', [ // <-- Antes: 'CharacterForm'
+        return Inertia::render('personajes/CharacterForm', [ 
             'characters' => $characters,
             'plays'      => $plays,
         ]);
@@ -40,7 +40,7 @@ class CharacterController extends Controller
         $character = new Character();
         $character->name  = $request->name;
         $character->notes = $request->notes;
-        $character->play_id = $request->play_id;
+        
 
         if ($request->hasFile('image')) {
             try {
@@ -53,6 +53,11 @@ class CharacterController extends Controller
         }
 
         $character->save();
+        
+        if ($request->play_id) {
+            $character->play()->sync([$request->play_id]);
+        }
+    
         return redirect()->route('characters.index');
     }
 
@@ -86,7 +91,7 @@ class CharacterController extends Controller
 
         $character->name  = $request->name;
         $character->notes = $request->notes;
-        $character->play_id = $request->play_id;
+        
 
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('characters', 'public');
@@ -94,12 +99,28 @@ class CharacterController extends Controller
         }
 
         $character->save();
+
+        if ($request->play_id) {
+            $character->play()->sync([$request->play_id]);
+        } else {
+            // En caso de no enviar obra, podemos limpiar la relación
+            $character->play()->sync([]);
+        }
+    
         return redirect()->route('characters.index');
     }
 
     public function destroy(Character $character)
     {
+        // Verifica si el personaje tiene obras asociadas en la relación muchos a muchos
+        if ($character->play()->exists()) {
+            return redirect()->route('characters.index')
+                             ->with('error', 'No se puede eliminar este personaje porque está asociado a una obra.');
+        }
+    
         $character->delete();
-        return redirect()->route('characters.index');
+    
+        return redirect()->route('characters.index')
+                         ->with('success', 'Personaje eliminado exitosamente.');
     }
 }
