@@ -56,7 +56,15 @@
               />
             </td>
             <td>{{ character.name }}</td>
-            <td>{{ character.play ? character.play.name : "N/A" }}</td>
+            <td>
+              <span v-if="character.play && character.play.length > 0">
+                <span v-for="(play, idx) in character.play" :key="play.id">
+                  {{ play.name
+                  }}<span v-if="idx < character.play.length - 1">, </span>
+                </span>
+              </span>
+              <span v-else>N/A</span>
+            </td>
             <td>{{ character.notes || "N/A" }}</td>
             <td class="actions-cell">
               <button
@@ -103,11 +111,14 @@ export default {
         const matchName =
           !this.search.name ||
           character.name.toLowerCase().includes(this.search.name.toLowerCase());
-        // Extraer el nombre de la obra, si existe
-        const playName = character.play ? character.play.name : "";
+        // Como la relación es muchos a muchos, concatenamos el nombre de todas las obras
+        const playNames =
+          character.play && character.play.length > 0
+            ? character.play.map((play) => play.name).join(" ")
+            : "";
         const matchWork =
           !this.search.work ||
-          playName.toLowerCase().includes(this.search.work.toLowerCase());
+          playNames.toLowerCase().includes(this.search.work.toLowerCase());
         return matchName && matchWork;
       });
     },
@@ -120,15 +131,52 @@ export default {
       this.$inertia.visit(`/characters/${characterId}/editar`);
     },
     deleteCharacter(characterId) {
-      if (confirm("¿Estás seguro de que deseas eliminar este personaje?")) {
-        this.$inertia.delete(`/characters/${characterId}`, {
-          preserveState: false,
-          onError: (errors) => {
-            console.error("Error al eliminar el personaje:", errors);
-            alert("Hubo un error al eliminar el personaje.");
-          },
+      // Buscar el personaje en la lista
+      const character = this.characters.find((c) => c.id === characterId);
+
+      // Si el personaje tiene obras asociadas, se muestra una alerta de error
+      if (character && character.play && character.play.length > 0) {
+        this.$swal.fire({
+          icon: "error",
+          title: "No se puede eliminar",
+          text: "Este personaje está asociado a una obra.",
         });
+        return;
       }
+
+      // Mostrar confirmación con SweetAlert
+      this.$swal
+        .fire({
+          title: "¿Estás seguro?",
+          text: "El personaje será eliminado !!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Eliminar",
+          cancelButtonText: "Cancelar",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.$inertia.delete(`/characters/${characterId}`, {
+              preserveState: false,
+              onSuccess: () => {
+                this.$swal.fire({
+                  icon: "success",
+                  title: "Eliminado",
+                  text: "El personaje ha sido eliminado.",
+                });
+                this.$inertia.visit("/characters");
+              },
+              onError: (errors) => {
+                console.error("Error al eliminar el personaje:", errors);
+                this.$swal.fire({
+                  icon: "error",
+                  title: "Error",
+                  text: "Hubo un error al eliminar el personaje.",
+                });
+              },
+            });
+          }
+        });
     },
   },
 };

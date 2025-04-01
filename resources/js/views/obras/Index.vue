@@ -135,7 +135,7 @@ export default {
       this.$swal
         .fire({
           title: "¿Estas seguro?",
-          text: "El personaje será eliminado !!",
+          text: "El personaje se retirará de la obra !!",
           icon: "warning",
           showCancelButton: true,
           confirmButtonText: "Delete",
