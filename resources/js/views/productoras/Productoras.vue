@@ -121,17 +121,49 @@ export default {
       this.$inertia.visit(`/productoras/${id}/editar`);
     },
     deleteProducer(id) {
-      if (confirm("¿Estás seguro de que deseas eliminar esta productora?")) {
-        this.$inertia.delete(`/productoras/${id}`, {
-          onSuccess: () => {
-            this.$inertia.visit("/productoras");
-          },
-          onError: (errors) => {
-            console.error("Error al eliminar la productora:", errors);
-            alert("Hubo un error al eliminar la productora.");
-          },
+      // Busca la productora por id en el array recibido como prop
+      const productora = this.productoras.find((p) => p.id === id);
+      // Si la productora tiene obras asociadas, muestra un mensaje de error
+      if (productora && productora.plays_count > 0) {
+        this.$swal.fire({
+          icon: "error",
+          title: "No se puede eliminar",
+          text: "Productora actualmente en uso.",
         });
+        return;
       }
+      // Muestra la confirmación personalizada
+      this.$swal
+        .fire({
+          title: "¿Estás seguro?",
+          text: "La productora será eliminada !!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Delete",
+          cancelButtonText: "Cancel",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.$inertia.delete(`/productoras/${id}`, {
+              onSuccess: () => {
+                this.$swal.fire({
+                  icon: "success",
+                  title: "Eliminada",
+                  text: "La productora ha sido eliminada.",
+                });
+                this.$inertia.visit("/productoras");
+              },
+              onError: (errors) => {
+                console.error("Error al eliminar la productora:", errors);
+                this.$swal.fire({
+                  icon: "error",
+                  title: "Error",
+                  text: "Hubo un error al eliminar la productora.",
+                });
+              },
+            });
+          }
+        });
     },
   },
 };

@@ -66,6 +66,9 @@ Route::middleware('auth')->group(function ()
 
     // Rutas de obras (Plays)
     Route::resource('obras', PlayController::class);
+    Route::delete('/obras/{play}/characters/{character}', [\App\Http\Controllers\PlayController::class, 'removeCharacter'])
+    ->name('obras.removeCharacter');
+
     
     
     

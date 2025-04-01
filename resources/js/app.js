@@ -42,9 +42,8 @@ import clickRipple from "@/directives/clickRipple";
 import * as bootstrap from "bootstrap";
 window.bootstrap = bootstrap;
 
-//CODIGO NUEVO 
-
-
+//CODIGO NUEVO
+import Sweetalert from "./plugins/sweetalert";
 
 const appName = window.document.getElementsByTagName("title")[0]?.innerText;
 
@@ -101,6 +100,7 @@ createInertiaApp({
   setup({ el, App, props, plugin }) {
     return createApp({ render: () => h(App, props) })
       .use(plugin)
+      .use(Sweetalert)
       .use(createPinia())
       .component("Link", Link)
       .component("Head", Head)

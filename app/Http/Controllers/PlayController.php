@@ -16,12 +16,20 @@ class PlayController extends Controller
      */
     public function index()
     {
-        $plays = Play::with('producer')->get(); // Esto carga la relación producer
+        $plays = Play::with(['producer', 'characters'])->get();
 
         return Inertia::render('obras/Index', [
             'plays' => $plays,
         ]);
     }
+
+    public function removeCharacter($playId, $characterId)
+        {
+            $play = \App\Models\Play::findOrFail($playId);
+            $play->characters()->detach($characterId);
+            return response()->json(['message' => 'El personaje fue removido de la obra.']);
+        }
+
 
     /**
      * Muestra el formulario para crear una nueva obra.
@@ -46,9 +54,17 @@ class PlayController extends Controller
             'producer_id' => 'nullable|integer|exists:producers,id',
             'active'      => 'required|boolean',
             'notes'       => 'nullable|string|max:255',
+            'character_ids'   => 'nullable|array',
+            'character_ids.*' => 'integer|exists:characters,id',
         ]);
 
-        Play::create($validated);
+        // Crear la obra
+        $play = Play::create($validated);
+
+        // Asignar los personajes (si se seleccionaron)
+        if (isset($validated['character_ids'])) {
+            $play->characters()->attach($validated['character_ids']);
+        }
 
         return redirect()->route('obras.index')
                          ->with('success', 'Obra creada correctamente.');
@@ -80,10 +96,15 @@ class PlayController extends Controller
             'producer_id' => 'nullable|integer|exists:producers,id',
             'active'      => 'required|boolean',
             'notes'       => 'nullable|string|max:255',
+            'character_ids'   => 'nullable|array',
+            'character_ids.*' => 'integer|exists:characters,id',
         ]);
     
         $play = Play::findOrFail($id);
         $play->update($validated);
+    
+        // Sincroniza los personajes seleccionados
+        $play->characters()->sync($validated['character_ids'] ?? []);
     
         return redirect()->route('obras.index')
                          ->with('success', 'Obra actualizada correctamente.');

@@ -41,6 +41,10 @@ class HandleInertiaRequests extends Middleware
                     'gravatar' => $request->user()->gravatar,
                 ]) : null,
             ],
+            'flash' => [
+                'success' => $request->session()->get('success'),
+                'error'   => $request->session()->get('error'),
+            ],
         ]);
     }
 }
