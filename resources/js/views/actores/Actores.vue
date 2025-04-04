@@ -133,6 +133,8 @@
 </template>
 
 <script>
+import Swal from "sweetalert2";
+
 export default {
   props: {
     actores: {
@@ -190,17 +192,33 @@ export default {
       this.$inertia.visit(`/actores/${actorId}/editar`);
     },
     deleteActor(actorId) {
-      if (confirm("¿Estás seguro de que deseas eliminar este actor?")) {
-        this.$inertia.delete(`/actores/${actorId}`, {
-          onSuccess: () => {
-            this.$inertia.visit("/actores");
-          },
-          onError: (errors) => {
-            console.error("Error al eliminar el actor:", errors);
-            alert("Hubo un error al eliminar el actor.");
-          },
-        });
-      }
+      Swal.fire({
+        title: "¿Estás seguro?",
+        text: "El actor será eliminado !!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$inertia.delete(`/actores/${actorId}`, {
+            onSuccess: () => {
+              Swal.fire("Eliminado!", "El actor ha sido eliminado.", "success");
+              this.$inertia.visit("/actores");
+            },
+            onError: (errors) => {
+              console.error("Error al eliminar el actor:", errors);
+              Swal.fire(
+                "Error!",
+                "Hubo un error al eliminar el actor.",
+                "error",
+              );
+            },
+          });
+        }
+      });
     },
   },
 };

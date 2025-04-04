@@ -124,9 +124,36 @@ export default {
       router.visit(`/obras/${id}/edit`, { method: "get" });
     },
     deletePlay(id) {
-      if (confirm("¿Seguro que deseas eliminar esta obra?")) {
-        this.form.delete(`/obras/${id}`);
-      }
+      this.$swal
+        .fire({
+          title: "¿Estás seguro?",
+          text: "La obra será eliminada !!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Delete",
+          cancelButtonText: "Cancel",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.form
+              .delete(`/obras/${id}`)
+              .then(() => {
+                this.$swal.fire({
+                  icon: "success",
+                  title: "Eliminada",
+                  text: "La obra ha sido eliminada correctamente.",
+                });
+              })
+              .catch((error) => {
+                console.error("Error al eliminar la obra", error);
+                this.$swal.fire({
+                  icon: "error",
+                  title: "Error",
+                  text: "Hubo un error al eliminar la obra.",
+                });
+              });
+          }
+        });
     },
     toggleDropdown(playId) {
       this.openDropdowns[playId] = !this.openDropdowns[playId];
@@ -134,12 +161,12 @@ export default {
     removeCharacter(playId, characterId) {
       this.$swal
         .fire({
-          title: "¿Estas seguro?",
-          text: "El personaje se retirará de la obra !!",
+          title: "¿Estás seguro?",
+          text: "El personaje se retirará de la obra.",
           icon: "warning",
           showCancelButton: true,
-          confirmButtonText: "Delete",
-          cancelButtonText: "Cancel",
+          confirmButtonText: "Eliminar",
+          cancelButtonText: "Cancelar",
         })
         .then((result) => {
           if (result.isConfirmed) {
