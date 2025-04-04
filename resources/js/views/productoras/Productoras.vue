@@ -2,8 +2,8 @@
   <div class="page-container">
     <h1>Productoras</h1>
     <div class="actions">
-      <button id="btn-add" class="btn-add" @click="goToCreateProducer">
-        Dar de alta
+      <button class="btn-add" @click="goToCreateProducer">
+        Alta Productora
       </button>
     </div>
 
@@ -58,7 +58,7 @@
             </td>
             <td>{{ productora.name }}</td>
             <td>{{ productora.cif }}</td>
-            <td>
+            <td class="actions-cell">
               <button
                 :id="'btn-edit-' + index"
                 class="btn-edit"
@@ -121,9 +121,7 @@ export default {
       this.$inertia.visit(`/productoras/${id}/editar`);
     },
     deleteProducer(id) {
-      // Busca la productora por id en el array recibido como prop
       const productora = this.productoras.find((p) => p.id === id);
-      // Si la productora tiene obras asociadas, muestra un mensaje de error
       if (productora && productora.plays_count > 0) {
         this.$swal.fire({
           icon: "error",
@@ -132,15 +130,14 @@ export default {
         });
         return;
       }
-      // Muestra la confirmación personalizada
       this.$swal
         .fire({
           title: "¿Estás seguro?",
           text: "La productora será eliminada !!",
           icon: "warning",
           showCancelButton: true,
-          confirmButtonText: "Delete",
-          cancelButtonText: "Cancel",
+          confirmButtonText: "Eliminar",
+          cancelButtonText: "Cancelar",
         })
         .then((result) => {
           if (result.isConfirmed) {
@@ -170,11 +167,10 @@ export default {
 </script>
 
 <style scoped>
-/* Contenedor principal de la página con márgenes y gris elegante */
 .page-container {
   margin: 20px;
   padding: 20px;
-  background-color: rgb(255, 255, 255); /* Blanco */
+  background-color: rgb(255, 255, 255);
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(231, 40, 40, 0.1);
 }
@@ -184,7 +180,7 @@ export default {
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
 
-/* Estilo para las acciones */
+/* Acciones */
 .actions {
   display: flex;
   justify-content: flex-end;
@@ -195,16 +191,18 @@ export default {
   padding: 8px 16px;
   border: none;
   border-radius: 4px;
-  background-color: #3498db; /* Celeste */
-  color: #fff;
+  background-color: #3498db;
+  color: #fff !important;
   cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 .btn-add:hover {
   opacity: 0.8;
 }
 
-/* Contenedor del buscador */
+/* Buscador */
 .search-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -231,18 +229,19 @@ export default {
   background-color: #f9f9f9;
 }
 
-/* Contenedor de la tabla */
+/* Tabla */
 .table-container {
-  background: rgb(212, 212, 212); /* Gris claro */
+  background: rgb(212, 212, 212);
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   padding: 20px;
+  overflow-x: auto;
 }
 
-/* Estilo de la tabla */
 table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 600px;
 }
 
 th,
@@ -250,7 +249,7 @@ td {
   border: 1px solid #ccc;
   padding: 12px;
   text-align: left;
-  color: #3d3c3c; /* Texto gris opaco */
+  color: #3d3c3c;
 }
 
 th {
@@ -274,39 +273,123 @@ tr:nth-child(odd) {
   background-color: #ffffff;
 }
 
-/* Estilo de los botones */
-button {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-right: 5px;
+/* Botones */
+.actions-cell button {
+  display: block;
+  width: 100%;
+  margin-bottom: 5px;
 }
 
 .btn-edit {
-  background-color: #28a745; /* Verde */
+  background-color: #28a745;
   color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .btn-edit:hover {
-  background-color: #218838; /* Verde más oscuro */
+  background-color: #218838;
   opacity: 0.8;
 }
 
 .btn-delete {
   background-color: #e74c3c;
   color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
 }
 
-button:hover {
+.btn-edit,
+.btn-delete {
+  width: 80px;
+  text-align: center;
+}
+
+.btn-delete:hover {
+  background-color: #c0392b;
   opacity: 0.8;
 }
 
-/* Estilo de la foto */
+/* Imagen */
 .producer-photo {
   width: 50px;
   height: 50px;
   object-fit: cover;
   border-radius: 10%;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .page-container {
+    margin: 15px;
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .btn-add {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+  }
+
+  .btn-edit,
+  .btn-delete {
+    width: 100%;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+  }
+
+  .search-container {
+    grid-template-columns: 1fr;
+  }
+
+  th,
+  td {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .actions {
+    justify-content: flex-start;
+    margin-bottom: 15px;
+  }
+
+  .btn-add {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  h1 {
+    font-size: 1.25rem;
+  }
+
+  .page-container {
+    margin: 10px;
+    padding: 10px;
+  }
+
+  th,
+  td {
+    padding: 8px;
+    font-size: 0.85rem;
+  }
+
+  .btn-edit,
+  .btn-delete {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
 }
 </style>

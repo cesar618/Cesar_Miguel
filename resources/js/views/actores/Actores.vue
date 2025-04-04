@@ -109,7 +109,7 @@
                 <span class="slider"></span>
               </label>
             </td>
-            <td>
+            <td class="actions-cell">
               <button
                 :id="'btn-edit-' + index"
                 class="btn-edit"
@@ -225,11 +225,10 @@ export default {
 </script>
 
 <style scoped>
-/* Contenedor principal de la página */
 .page-container {
   margin: 20px;
   padding: 20px;
-  background-color: #fff;
+  background-color: rgb(255, 255, 255);
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(231, 40, 40, 0.1);
 }
@@ -239,7 +238,6 @@ export default {
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
 
-/* Acciones */
 .actions {
   display: flex;
   justify-content: flex-end;
@@ -251,13 +249,16 @@ export default {
   border: none;
   border-radius: 4px;
   background-color: #3498db;
-  color: #fff;
+  color: #fff !important;
   cursor: pointer;
   font-size: 1rem;
   font-weight: 600;
 }
 
-/* Buscador */
+.btn-add:hover {
+  opacity: 0.8;
+}
+
 .search-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -284,9 +285,9 @@ export default {
   background-color: #f9f9f9;
 }
 
-/* Tabla */
 .table-container {
-  background: #d4d4d4;
+  overflow-x: auto;
+  background: rgb(212, 212, 212);
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   padding: 20px;
@@ -323,39 +324,52 @@ tr:nth-child(even) {
 }
 
 tr:nth-child(odd) {
-  background-color: #fff;
+  background-color: #ffffff;
 }
 
-/* Botones */
-.btn-edit,
-.btn-delete {
-  width: 80px;
-  text-align: center;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
+/* 🎯 ESTILO ACTUALIZADO PARA LOS BOTONES DE ACCIONES */
+.actions-cell button {
+  display: block;
+  width: 100%;
+  margin-bottom: 5px;
 }
 
 .btn-edit {
   background-color: #28a745;
   color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .btn-edit:hover {
   background-color: #218838;
+  opacity: 0.8;
 }
 
 .btn-delete {
   background-color: #e74c3c;
   color: #fff;
-  margin-top: 5px;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-edit,
+.btn-delete {
+  width: 80px;
+  text-align: center;
 }
 
 .btn-delete:hover {
   background-color: #c0392b;
+  opacity: 0.8;
 }
 
 /* Foto */
@@ -410,5 +424,74 @@ input:checked + .slider {
 
 input:checked + .slider:before {
   transform: translateX(20px);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .page-container {
+    margin: 15px;
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .btn-add {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+  }
+
+  th,
+  td {
+    padding: 10px;
+  }
+
+  .btn-edit,
+  .btn-delete {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+
+  .search-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .actions {
+    justify-content: flex-start;
+    margin-bottom: 15px;
+  }
+
+  .btn-add {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  h1 {
+    font-size: 1.25rem;
+  }
+
+  .page-container {
+    margin: 10px;
+    padding: 10px;
+  }
+
+  th,
+  td {
+    padding: 8px;
+    font-size: 0.85rem;
+  }
+
+  .btn-edit,
+  .btn-delete {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
+
+  .search-container {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

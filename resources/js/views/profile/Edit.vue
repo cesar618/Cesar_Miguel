@@ -1,18 +1,3 @@
-<script setup>
-import UpdateProfileInformationForm from "./Partials/UpdateProfileInformationForm.vue";
-import UpdatePasswordForm from "./Partials/UpdatePasswordForm.vue";
-import DeleteUserForm from "./Partials/DeleteUserForm.vue";
-
-defineProps({
-  mustVerifyEmail: {
-    type: Boolean,
-  },
-  status: {
-    type: String,
-  },
-});
-</script>
-
 <template>
   <Head title="Profile" />
 
@@ -28,6 +13,10 @@ defineProps({
           />
         </div>
         <h1 class="h2 text-white mb-0">{{ $page.props.auth.user.name }}</h1>
+        <!-- Mostrar roles: se asume que $page.props.auth.user.roles es un arreglo -->
+        <p class="text-white-75 mb-3">
+          Roll: {{ $page.props.auth.user.roles.join(", ") }}
+        </p>
         <h2 class="h4 fw-normal text-white-75">Edit your profile</h2>
       </div>
     </div>
@@ -78,3 +67,18 @@ defineProps({
   </div>
   <!-- END Page Content -->
 </template>
+
+<script setup>
+import UpdateProfileInformationForm from "./Partials/UpdateProfileInformationForm.vue";
+import UpdatePasswordForm from "./Partials/UpdatePasswordForm.vue";
+import DeleteUserForm from "./Partials/DeleteUserForm.vue";
+
+defineProps({
+  mustVerifyEmail: {
+    type: Boolean,
+  },
+  status: {
+    type: String,
+  },
+});
+</script>
