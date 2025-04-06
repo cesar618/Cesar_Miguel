@@ -16,9 +16,10 @@ Route::get('/', function () {
     ]);
 })->name('welcome');
 
-// Todas las rutas autenticadas en un solo grupo
-Route::middleware('auth')->group(function () 
-{
+
+// ··· NUEVA CONFIGURACION DE RUTAS ···
+// Rutas para cualquier usuario AUTENTICADO (checker, operator, admin)
+Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
@@ -29,6 +30,14 @@ Route::middleware('auth')->group(function ()
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // vista de personajes
+    Route::get('/characters', [CharacterController::class, 'index'])->name('characters.index');
+
+
+});
+
+//Rutas solo para ADMIN o también para OPERATOR
+Route::middleware(['auth', 'role:admin|operator'])->group(function () {
     // Rutas de actores
     Route::get('/actores', [ActorController::class, 'index'])->name('actores.index');
     Route::get('/actores/crear', [ActorController::class, 'create'])->name('actores.create');
@@ -39,7 +48,6 @@ Route::middleware('auth')->group(function ()
     Route::post('/actores/{id}', [ActorController::class, 'update']); // Mantener compatibilidad
     Route::delete('/actores/{id}', [ActorController::class, 'destroy'])->name('actores.destroy');
     
-
     // Rutas de productoras
     Route::get('/productoras', [ProducerController::class, 'index'])->name('productoras.index');
     Route::get('/productoras/crear', [ProducerController::class, 'create'])->name('productoras.create');
@@ -51,9 +59,6 @@ Route::middleware('auth')->group(function ()
     Route::delete('/productoras/{id}', [ProducerController::class, 'destroy'])->name('productoras.destroy');
 
     // Rutas de personajes
-   
-    
-    Route::get('/characters', [CharacterController::class, 'index'])->name('characters.index');
     Route::get('/characters/crear', [CharacterController::class, 'create'])->name('characters.create');
     Route::post('/characters', [CharacterController::class, 'store'])->name('characters.store');
     Route::get('/charactersRuta', [CharacterController::class, 'mostrarCharacters'])->name('charactercontroller.mostrarCharacters');
@@ -63,15 +68,11 @@ Route::middleware('auth')->group(function ()
     Route::post('/characters/{character}', [CharacterController::class, 'update']);
     Route::delete('/characters/{character}', [CharacterController::class, 'destroy'])->name('characters.destroy');
     
-
     // Rutas de obras (Plays)
     Route::resource('obras', PlayController::class);
     Route::delete('/obras/{play}/characters/{character}', [\App\Http\Controllers\PlayController::class, 'removeCharacter'])
     ->name('obras.removeCharacter');
 
-    
-    
-    
     // Rutas staffsoporte
     //Listado
     Route::get('/staff-soporte', [SupportStaffController::class, 'index'])->name('staff.index');
@@ -85,11 +86,14 @@ Route::middleware('auth')->group(function ()
     Route::put('/staff-soporte/{id}', [SupportStaffController::class, 'update'])->name('staff.update');
     // Eliminar registro
     Route::delete('/staff-soporte/{id}', [SupportStaffController::class, 'destroy'])->name('staff.destroy');
-    
-
-    
-    
 });
+
+// Rutas EXCLUSIVAS para ADMIN
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+    // OJO AQUI COLOCAREMOS LA ADMINISTRACION DE USUARIOS ----> ABM USUARIOS
+});
+
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/preview.php';

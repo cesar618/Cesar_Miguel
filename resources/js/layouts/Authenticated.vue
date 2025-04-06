@@ -1,5 +1,6 @@
 <script setup>
 import { useTemplateStore } from "@/stores/template";
+import { usePage } from "@inertiajs/vue3";
 
 import BaseLayout from "@/layouts/BaseLayout.vue";
 import BaseNavigation from "@/components/BaseNavigation.vue";
@@ -7,7 +8,6 @@ import BaseNavigation from "@/components/BaseNavigation.vue";
 // Main store
 const store = useTemplateStore();
 
-// Set default elements for this layout
 store.setLayout({
   header: true,
   sidebar: true,
@@ -15,18 +15,103 @@ store.setLayout({
   footer: true,
 });
 
-// Set various template options for this layout variation
 store.header({ mode: "fixed" });
 store.headerStyle({ mode: "light" });
 store.mainContent({ mode: "narrow" });
+
+// Obtener usuario y rol
+const page = usePage();
+const user = page.props.auth.user;
+const role = user?.roles?.[0] ?? null;
+
+// DEBUG
+console.log("Usuario autenticado:", user);
+console.log("Rol del usuario:", role);
+
+// Función para construir el menú dinámicamente
+function getSidebarItems(role) {
+  const baseItems = [
+    {
+      name: "Dashboard",
+      to: "/dashboard",
+      icon: "fa fa-rocket",
+    },
+    {
+      name: "Account",
+      heading: true,
+    },
+    {
+      name: "Profile",
+      to: "/profile",
+      icon: "fa fa-user-circle",
+    },
+  ];
+
+  const footerItems = [
+    {
+      name: "More",
+      heading: true,
+    },
+    {
+      name: "Landing",
+      to: "/",
+      icon: "fa fa-arrow-left",
+    },
+  ];
+
+  const maintenanceForAll = [
+    {
+      name: "Mantenimiento",
+      heading: true,
+    },
+    {
+      name: "Characters",
+      to: "/characters",
+      icon: "fa fa-user-circle",
+    },
+  ];
+
+  const extraMaintenance = [
+    {
+      name: "Actores",
+      to: "/actoresRuta",
+      icon: "fa fa-user-circle",
+    },
+    {
+      name: "Productoras",
+      to: "/productoras",
+      icon: "fa fa-user-circle",
+    },
+    {
+      name: "Obras",
+      to: "/obras",
+      icon: "fa fa-user-circle",
+    },
+    {
+      name: "Staff de Soporte",
+      to: "/staff-soporte",
+      icon: "fa fa-user-circle",
+    },
+  ];
+
+  if (role === "admin" || role === "operator") {
+    return [
+      ...baseItems,
+      ...maintenanceForAll,
+      ...extraMaintenance,
+      ...footerItems,
+    ];
+  }
+
+  // checker
+  return [...baseItems, ...maintenanceForAll, ...footerItems];
+}
 </script>
 
 <template>
   <BaseLayout>
     <!-- Side Overlay Header -->
-    <!-- Using the available v-slot, we can override the default Side Overlay header from layouts/partials/SideOvelay.vue -->
     <template #side-overlay-header>
-      <!-- User Avatar -->
       <a class="img-link me-1" href="javascript:void(0)">
         <img
           class="img-avatar img-avatar32"
@@ -34,103 +119,29 @@ store.mainContent({ mode: "narrow" });
           alt="User Avatar"
         />
       </a>
-      <!-- END User Avatar -->
-
-      <!-- User Info -->
       <div class="ms-2">
-        <Link href="/profile" class="text-dark fw-semibold fs-sm">{{
-          $page.props.auth.user.name
-        }}</Link>
+        <Link href="/profile" class="text-dark fw-semibold fs-sm">
+          {{ $page.props.auth.user.name }}
+        </Link>
       </div>
-      <!-- END User Info -->
     </template>
-    <!-- END Side Overlay Header -->
 
     <!-- Side Overlay Content -->
-    <!-- Using the available v-slot, we can override the default Side Overlay content from layouts/partials/SideOvelay.vue -->
     <template #side-overlay-content>
       <div class="content-side">
         <p class="fs-sm">Side Overlay content..</p>
       </div>
     </template>
-    <!-- END Side Overlay Content -->
 
     <!-- Sidebar Content -->
-    <!-- Using the available v-slot, we can override the default Sidebar content from layouts/partials/Sidebar.vue -->
     <template #sidebar-content>
       <div class="content-side">
-        <BaseNavigation
-          :nodes="[
-            {
-              name: 'Dashboard',
-              to: '/dashboard',
-              icon: 'fa fa-rocket',
-            },
-            {
-              name: 'Account',
-              heading: true,
-            },
-            {
-              name: 'Profile',
-              to: '/profile',
-              icon: 'fa fa-user-circle',
-            },
-            {
-              name: 'Mantenimiento',
-              heading: true,
-            },
-            {
-              name: 'Actores',
-              to: '/actoresRuta',
-              icon: 'fa fa-user-circle',
-            },
-            {
-              name: 'Productoras',
-              to: '/productoras',
-              icon: 'fa fa-user-circle',
-            },
-            {
-              name: 'Personajes',
-              to: '/characters',
-              icon: 'fa fa-user-circle',
-            },
-
-            {
-              name: 'Obras',
-              to: '/obras',
-              icon: 'fa fa-user-circle',
-            },
-            {
-              name: 'Staff de Soporte',
-              to: '/staff-soporte',
-              icon: 'fa fa-user-circle',
-            },
-
-            {
-              name: 'Locaciones',
-              to: '/m',
-              icon: 'fa fa-user-circle',
-            },
-
-            {
-              name: 'More',
-              heading: true,
-            },
-            {
-              name: 'Landing',
-              to: '/',
-              icon: 'fa fa-arrow-left',
-            },
-          ]"
-        />
+        <BaseNavigation :nodes="getSidebarItems(role)" />
       </div>
     </template>
-    <!-- END Sidebar Content -->
 
     <!-- Header Content Left -->
-    <!-- Using the available v-slot, we can override the default Header content from layouts/partials/Header.vue -->
     <template #header-content-left>
-      <!-- Toggle Sidebar -->
       <button
         type="button"
         class="btn btn-sm btn-alt-secondary me-2"
@@ -138,14 +149,10 @@ store.mainContent({ mode: "narrow" });
       >
         <i class="fa fa-fw fa-bars"></i>
       </button>
-      <!-- END Toggle Sidebar -->
     </template>
-    <!-- END Header Content Left -->
 
     <!-- Header Content Right -->
-    <!-- Using the available v-slot, we can override the default Header content from layouts/partials/Header.vue -->
     <template #header-content-right>
-      <!-- User Dropdown -->
       <div class="dropdown d-inline-block ms-2">
         <button
           type="button"
@@ -161,9 +168,9 @@ store.mainContent({ mode: "narrow" });
             alt="User Avatar"
             style="width: 21px"
           />
-          <span class="d-none d-sm-inline-block ms-2">{{
-            $page.props.auth.user.name.split(" ")[0]
-          }}</span>
+          <span class="d-none d-sm-inline-block ms-2">
+            {{ $page.props.auth.user.name.split(" ")[0] }}
+          </span>
           <i
             class="fa fa-fw fa-angle-down d-none d-sm-inline-block opacity-50 ms-1 mt-1"
           ></i>
@@ -190,9 +197,7 @@ store.mainContent({ mode: "narrow" });
           </div>
         </div>
       </div>
-      <!-- END User Dropdown -->
 
-      <!-- Toggle Side Overlay -->
       <button
         type="button"
         class="btn btn-sm btn-alt-secondary ms-2"
@@ -200,17 +205,13 @@ store.mainContent({ mode: "narrow" });
       >
         <i class="fa fa-fw fa-list-ul fa-flip-horizontal"></i>
       </button>
-      <!-- END Toggle Side Overlay -->
     </template>
-    <!-- END Header Content Right -->
 
     <!-- Footer Content Left -->
-    <!-- Using the available v-slot, we can override the default Footer content from layouts/partials/Footer.vue -->
     <template #footer-content-left>
       <strong>{{ store.app.version }}</strong>
       &copy; {{ store.app.copyright }}
     </template>
-    <!-- END Footer Content Left -->
 
     <slot />
   </BaseLayout>
