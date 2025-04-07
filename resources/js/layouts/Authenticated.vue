@@ -87,6 +87,22 @@ function getSidebarItems(role) {
       to: "/obras",
       icon: "fa fa-user-circle",
     },
+    
+    {
+      name: "Eventos",
+      to: "/eventos",
+      icon: "fa fa-user-circle",
+    },
+    {
+      name: "Locaciones",
+      to: "/location",
+      icon: "fa fa-user-circle",
+    },
+    {
+      name: "Calendario",
+      to: "/calendar",
+      icon: "fa fa-user-circle",
+    },
     {
       name: "Staff de Soporte",
       to: "/staff-soporte",

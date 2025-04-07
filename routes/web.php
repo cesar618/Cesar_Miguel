@@ -8,6 +8,10 @@ use App\Http\Controllers\CharacterController;
 use App\Http\Controllers\PlayController; // Importamos PlayController
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\EventsController;
+use App\Http\Controllers\LocationsController;
+use App\Http\Controllers\StaffController;
+use App\Http\Controllers\CalendarController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -86,6 +90,42 @@ Route::middleware(['auth', 'role:admin|operator'])->group(function () {
     Route::put('/staff-soporte/{id}', [SupportStaffController::class, 'update'])->name('staff.update');
     // Eliminar registro
     Route::delete('/staff-soporte/{id}', [SupportStaffController::class, 'destroy'])->name('staff.destroy');
+
+    Route::get('/eventos', [EventsController::class, 'index'])->name('events.index');
+    Route::get('/eventos/crear', [EventsController::class, 'create'])->name('events.create');
+    Route::post('/eventos', [EventsController::class, 'store'])->name('events.store');
+    Route::get('/eventos/{event}/editar', [EventsController::class, 'edit'])->name('events.edit');
+    Route::put('/eventos/{event}', [EventsController::class, 'update'])->name('events.update');
+    Route::delete('/eventos/{event}', [EventsController::class, 'destroy'])->name('events.destroy');
+
+
+    Route::get('/location', [LocationsController::class, 'index'])->name('location.index');
+    Route::get('/location/create', [LocationsController::class, 'create'])->name('locations.create');
+    Route::post('/location', [LocationsController::class, 'store'])->name('locations.store');
+    Route::get('/location/{location}/edit', [LocationsController::class, 'edit'])->name('locations.edit');
+    Route::put('/location/{location}', [LocationsController::class, 'update'])->name('locations.update');
+    Route::delete('/location/{location}', [LocationsController::class, 'destroy'])->name('locations.destroy');
+
+
+    Route::prefix('eventos/{eventId}/staff')->group(function () {
+        Route::get('/', [StaffController::class, 'index'])->name('staff.index');
+        Route::get('/crear', [StaffController::class, 'create'])->name('staff.create');
+        Route::post('/', [StaffController::class, 'store'])->name('staff.store');
+        Route::get('/{staffId}/editar', [StaffController::class, 'edit'])->name('staff.edit');
+        Route::put('/{staffId}', [StaffController::class, 'update'])->name('staff.update');
+        Route::delete('/{staffId}', [StaffController::class, 'destroy'])->name('staff.destroy');
+    });
+
+    Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::get('/calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
+    Route::post('/calendar/events', [CalendarController::class, 'store'])->name('calendar.store');
+    Route::put('/calendar/events/{event}', [CalendarController::class, 'update'])->name('calendar.update');
+
+
+
+
+    
+
 });
 
 // Rutas EXCLUSIVAS para ADMIN
